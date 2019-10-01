@@ -17,6 +17,6 @@ internal class YamlParserTest {
 
 }
 
-data class ParsingClass1 constructor(val key1: String, val key2: ParsingClass2)
+data class ParsingClass1(val key1: String, val key2: ParsingClass2)
 
-data class ParsingClass2 constructor(val key3: String)
+data class ParsingClass2(val key3: String)
