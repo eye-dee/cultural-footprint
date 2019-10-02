@@ -28,7 +28,7 @@ class TwitterCollector(private val twitter: Twitter) {
 
 data class TwitterProperties(val consumerKey: String, val consumerSecret: String, val accessToken: String, val accessTokenSecret: String)
 
-fun twitterConfig(twitterProperties: TwitterProperties): Configuration? {
+fun twitterConfig(twitterProperties: TwitterProperties): Configuration {
     return ConfigurationBuilder()
             .setDaemonEnabled(true)
             .setOAuthConsumerKey(twitterProperties.consumerKey)
