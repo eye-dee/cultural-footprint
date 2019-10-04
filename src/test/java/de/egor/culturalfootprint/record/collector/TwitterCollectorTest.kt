@@ -1,4 +1,4 @@
-package de.egor.culturalfootprint.collector
+package de.egor.culturalfootprint.record.collector
 
 import de.egor.culturalfootprint.yaml.YamlParser
 import org.assertj.core.api.Assertions.assertThat
@@ -14,7 +14,8 @@ internal class TwitterCollectorTest {
     @Test
     fun getRecords() {
         val records = collector.getRecords()
-        assertThat(records).isNotEmpty()
+
+        assertThat(records).isNotEmpty().hasSize(100)
         val rawRecord = records[0]
         assertThat(rawRecord.data).isNotBlank()
         assertThat(rawRecord.source.tweetId).isNotNegative()
@@ -26,6 +27,6 @@ internal class TwitterCollectorTest {
         val twitterProperties = yamlParser.fromResource("twitter.yaml", TwitterProperties::class.java)
         val twitterConfiguration = twitterConfig(twitterProperties)
         val twitterFactory = TwitterFactory(twitterConfiguration)
-        return TwitterCollector(twitterFactory.instance)
+        return TwitterCollector(twitterFactory.instance, TwitterCollectorProperties())
     }
 }
