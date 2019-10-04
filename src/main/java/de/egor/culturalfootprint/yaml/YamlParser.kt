@@ -18,7 +18,7 @@ class YamlParser {
     fun <T> fromResource(resource: String, clazz: Class<T>): T {
         val stream = clazz.classLoader.getResourceAsStream(resource)
                 ?: Files.newInputStream(Paths.get(resource))
-        return return stream.use {
+        return stream.use {
             mapper.readValue(it, clazz)
         }
     }
