@@ -29,6 +29,7 @@ class RawRecordRepository(private val properties: RawRecordRepositoryProperties)
 
     fun getLatestRecord(): Optional<RawRecord> {
         return Files.lines(outputPath(properties))
+            .parallel()
             .filter{ !it.isBlank()}
             .map { mapper.readValue<RawRecord>(it) }
             .max(Comparator.comparingLong<RawRecord> { it.source.tweetId })
