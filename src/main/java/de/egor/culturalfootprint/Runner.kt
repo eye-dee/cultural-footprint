@@ -24,9 +24,9 @@ object Runner {
         val twitterProperties = yamlParser.fromResource(twitterYamlPath, TwitterProperties::class.java)
         val twitterConfiguration = twitterConfig(twitterProperties)
         val twitterFactory = TwitterFactory(twitterConfiguration)
-        val twitterCollector = TwitterCollector(twitterFactory.instance, TwitterCollectorProperties())
         val repositoryProperties = RawRecordRepositoryProperties(outputFile = """data/output.data""")
         val recordRepository = RawRecordRepository(repositoryProperties)
+        val twitterCollector = TwitterCollector(twitterFactory.instance, TwitterCollectorProperties(), recordRepository)
         val rawRecordService = RawRecordService(twitterCollector, recordRepository)
         rawRecordService.startPolling()
     }

@@ -1,5 +1,6 @@
 package de.egor.culturalfootprint.record.collector
 
+import de.egor.culturalfootprint.record.repository.RawRecordRepository
 import twitter4j.Paging
 import twitter4j.Twitter
 import twitter4j.conf.Configuration
@@ -8,19 +9,32 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.stream.Collectors.toList
 
-class TwitterCollector(private val twitter: Twitter, private val properties: TwitterCollectorProperties) {
+class TwitterCollector(
+    private val twitter: Twitter,
+    private val properties: TwitterCollectorProperties,
+    private val repository: RawRecordRepository
+) {
 
     fun getRecords(): List<RawRecord> {
-        val paging = Paging()
+        val paging = repository.getLatestRecord()
+            .map {
+                Paging()
+                    .sinceId(it.source.tweetId)
+            }
+            .orElseGet { Paging() }
         paging.count = properties.requestedPageSize
         return twitter.getHomeTimeline(paging).stream()
-                .filter { it.text != null }
-                .map { tweet -> RawRecord(
-                        date = tweet.createdAt?.toInstant()?.atZone(UTC_ZONE)?.toLocalDateTime() ?: LocalDateTime.now(UTC_ZONE),
-                        data = tweet.text,
-                        source = RecordSource(tweetId = tweet.id)
-                ) }
-                .collect(toList())
+            .filter { it.text != null }
+            .map { tweet ->
+                RawRecord(
+                    date = tweet.createdAt?.toInstant()?.atZone(UTC_ZONE)?.toLocalDateTime() ?: LocalDateTime.now(
+                        UTC_ZONE
+                    ),
+                    data = tweet.text,
+                    source = RecordSource(tweetId = tweet.id)
+                )
+            }
+            .collect(toList())
     }
 
     companion object {
