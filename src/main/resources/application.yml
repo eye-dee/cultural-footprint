@@ -1,0 +1,10 @@
+raw:
+  record:
+    output-file: raw_records.data
+twitter:
+  consumerKey: kf0mkZoYC9REWNfr3sfq30Iyg
+  consumerSecret: yy3yfzrWNallw5PCWdZUIMoY7AOqMwKVBRlsMuJPrrghOwAOs5
+  accessToken: 1178408005219557382-PpGENCf9dq34fslSACdHV2A5dcPy2d
+  accessTokenSecret: MCqWjDAT9kJ0SVYe3vzdprEM1nFmAyrPFBC102slNjB2m
+  collector:
+    requested-page-size: 300

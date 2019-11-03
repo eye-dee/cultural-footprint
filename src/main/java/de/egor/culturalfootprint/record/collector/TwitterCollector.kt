@@ -1,6 +1,8 @@
 package de.egor.culturalfootprint.record.collector
 
 import de.egor.culturalfootprint.record.repository.RawRecordRepository
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Service
 import twitter4j.Paging
 import twitter4j.Twitter
 import twitter4j.conf.Configuration
@@ -9,6 +11,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.stream.Collectors.toList
 
+@Service
 class TwitterCollector(
     private val twitter: Twitter,
     private val properties: TwitterCollectorProperties,
@@ -42,23 +45,25 @@ class TwitterCollector(
     }
 }
 
+@ConfigurationProperties(prefix = "twitter")
 data class TwitterProperties(
-        val consumerKey: String,
-        val consumerSecret: String,
-        val accessToken: String,
-        val accessTokenSecret: String
+    var consumerKey: String?,
+    var consumerSecret: String?,
+    var accessToken: String?,
+    var accessTokenSecret: String?
 )
 
+@ConfigurationProperties(prefix = "twitter.collector")
 data class TwitterCollectorProperties(
-        val requestedPageSize: Int = 300
+    var requestedPageSize: Int = 300
 )
 
 fun twitterConfig(twitterProperties: TwitterProperties): Configuration {
     return ConfigurationBuilder()
-            .setDaemonEnabled(true)
-            .setOAuthConsumerKey(twitterProperties.consumerKey)
-            .setOAuthConsumerSecret(twitterProperties.consumerSecret)
-            .setOAuthAccessToken(twitterProperties.accessToken)
-            .setOAuthAccessTokenSecret(twitterProperties.accessTokenSecret)
-            .build()
+        .setDaemonEnabled(true)
+        .setOAuthConsumerKey(twitterProperties.consumerKey)
+        .setOAuthConsumerSecret(twitterProperties.consumerSecret)
+        .setOAuthAccessToken(twitterProperties.accessToken)
+        .setOAuthAccessTokenSecret(twitterProperties.accessTokenSecret)
+        .build()
 }

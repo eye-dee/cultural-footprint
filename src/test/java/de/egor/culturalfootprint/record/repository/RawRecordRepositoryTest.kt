@@ -4,8 +4,10 @@ import de.egor.culturalfootprint.record.collector.RawRecord
 import de.egor.culturalfootprint.record.collector.RecordSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.time.LocalDateTime
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class RawRecordRepositoryTest {
 
     private val repository = RawRecordRepository(RawRecordRepositoryProperties(outputFile = "test.data"))

@@ -1,23 +1,28 @@
 package de.egor.culturalfootprint.record
 
-import de.egor.culturalfootprint.Runner
 import de.egor.culturalfootprint.record.collector.RawRecord
 import de.egor.culturalfootprint.record.collector.TwitterCollector
 import de.egor.culturalfootprint.record.repository.RawRecordRepository
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import javax.annotation.PostConstruct
 
-class RawRecordService(private val collector: TwitterCollector,
-                       private val repository: RawRecordRepository) {
+@Service
+open class RawRecordService(
+    private val collector: TwitterCollector,
+    private val repository: RawRecordRepository
+) {
 
     private val scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
     private val executor = Executors.newSingleThreadExecutor()
     private val queue: BlockingQueue<List<RawRecord>> = ArrayBlockingQueue(10)
-    private val log = LoggerFactory.getLogger(Runner::class.java)
+    private val log = LoggerFactory.getLogger(RawRecordService::class.java)
 
+    @PostConstruct
     fun startPolling() {
         log.info("Polling started")
         scheduledExecutor.scheduleWithFixedDelay({
