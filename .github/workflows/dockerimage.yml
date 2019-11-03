@@ -17,7 +17,7 @@ jobs:
       run: ./gradlew build
     - name: Build the Docker image
 #       if: github.ref == 'master'
-      run: docker login docker.pkg.github.com -u sausageRoll -p ${{ secrets.GITHUB_TOKEN }} && docker build . --file Dockerfile --tag cultural_footprint:latest
+      run: docker login docker.pkg.github.com -u sausageRoll -p ${{ secrets.GITHUB_TOKEN }} && docker build . --file Dockerfile --tag docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:latest
     - name: Publish the Docker image
 #       if: github.ref == 'master'
       run: docker push docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:latest
