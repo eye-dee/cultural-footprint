@@ -45,14 +45,15 @@ class TwitterCollector(
     }
 }
 
+@ConfigurationProperties(prefix = "twitter")
 data class TwitterProperties(
-    val consumerKey: String,
-    val consumerSecret: String,
-    val accessToken: String,
-    val accessTokenSecret: String
+    var consumerKey: String?,
+    var consumerSecret: String?,
+    var accessToken: String?,
+    var accessTokenSecret: String?
 )
 
-@ConfigurationProperties(prefix = "twitter")
+@ConfigurationProperties(prefix = "twitter.collector")
 data class TwitterCollectorProperties(
     var requestedPageSize: Int = 300
 )

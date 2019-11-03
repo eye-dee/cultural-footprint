@@ -12,16 +12,15 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.util.Optional
-import javax.annotation.PostConstruct
 
 @Repository
 class RawRecordRepository(
-    private val properties: RawRecordRepositoryProperties,
-    private val mapper: ObjectMapper
+    private val properties: RawRecordRepositoryProperties
 ) {
 
-    @PostConstruct
-    fun init() {
+    private val mapper: ObjectMapper = ObjectMapper()
+
+    init {
         mapper.registerModule(JavaTimeModule())
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         mapper.registerModule(KotlinModule())

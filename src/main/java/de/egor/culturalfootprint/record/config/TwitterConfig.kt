@@ -2,7 +2,6 @@ package de.egor.culturalfootprint.record.config
 
 import de.egor.culturalfootprint.record.collector.TwitterProperties
 import de.egor.culturalfootprint.record.collector.twitterConfig
-import de.egor.culturalfootprint.yaml.YamlParser
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import twitter4j.Twitter
@@ -17,9 +16,7 @@ open class TwitterConfig {
     }
 
     @Bean
-    open fun twitterFactory(yamlParser: YamlParser): TwitterFactory {
-        val twitterYamlPath = System.getenv("TWITTER_YAML_PATH") ?: "twitter.yaml"
-        val twitterProperties = yamlParser.fromResource(twitterYamlPath, TwitterProperties::class.java)
+    open fun twitterFactory(twitterProperties: TwitterProperties): TwitterFactory {
         val twitterConfiguration = twitterConfig(twitterProperties)
         return TwitterFactory(twitterConfiguration)
     }

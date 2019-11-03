@@ -1,19 +1,22 @@
 package de.egor.culturalfootprint.record.collector
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import de.egor.culturalfootprint.record.repository.RawRecordRepository
-import de.egor.culturalfootprint.record.repository.RawRecordRepositoryProperties
-import de.egor.culturalfootprint.yaml.YamlParser
+import de.egor.culturalfootprint.record.RawRecordService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import twitter4j.TwitterFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class TwitterCollectorTest {
 
-    private val collector = buildCollector()
+    @Autowired
+    private lateinit var collector: TwitterCollector
+
+    @MockBean
+    private lateinit var rawRecordService: RawRecordService
 
     @Test
     fun getRecords() {
@@ -26,13 +29,4 @@ internal class TwitterCollectorTest {
         assertThat(rawRecord.date).isBefore(LocalDateTime.now(ZoneId.of("UTC")))
     }
 
-    private fun buildCollector(): TwitterCollector {
-        val yamlParser = YamlParser(ObjectMapper(YAMLFactory()))
-        val twitterProperties = yamlParser.fromResource("twitter.yaml", TwitterProperties::class.java)
-        val twitterConfiguration = twitterConfig(twitterProperties)
-        val twitterFactory = TwitterFactory(twitterConfiguration)
-        val repository = RawRecordRepository(RawRecordRepositoryProperties(), ObjectMapper())
-        repository.init()
-        return TwitterCollector(twitterFactory.instance, TwitterCollectorProperties(), repository)
-    }
 }

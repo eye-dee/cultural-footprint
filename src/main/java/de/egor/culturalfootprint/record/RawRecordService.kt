@@ -12,8 +12,10 @@ import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 
 @Service
-class RawRecordService(private val collector: TwitterCollector,
-                       private val repository: RawRecordRepository) {
+open class RawRecordService(
+    private val collector: TwitterCollector,
+    private val repository: RawRecordRepository
+) {
 
     private val scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
     private val executor = Executors.newSingleThreadExecutor()
