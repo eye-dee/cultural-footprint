@@ -25,6 +25,7 @@ ext {
 dependencyManagement {
     imports {
         mavenBom SpringBootPlugin.BOM_COORDINATES
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.2.0.RELEASE'
     }
 }
 
@@ -37,12 +38,6 @@ jar {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 
-}
-
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.1.5.RELEASE'
-    }
 }
 
 test {
