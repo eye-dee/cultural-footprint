@@ -1,0 +1,16 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u sausageRoll --password-stdin && docker build . --file Dockerfile --tag cultural_footprint:latest
+    - name: Publish the Docker image
+      run: docker push docker.pkg.github.com/sausageRoll/cultural-footprint/cultural_footprint:latest
