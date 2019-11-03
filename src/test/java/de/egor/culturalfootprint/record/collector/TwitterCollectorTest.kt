@@ -1,5 +1,7 @@
 package de.egor.culturalfootprint.record.collector
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import de.egor.culturalfootprint.record.repository.RawRecordRepository
 import de.egor.culturalfootprint.record.repository.RawRecordRepositoryProperties
 import de.egor.culturalfootprint.yaml.YamlParser
@@ -25,11 +27,12 @@ internal class TwitterCollectorTest {
     }
 
     private fun buildCollector(): TwitterCollector {
-        val yamlParser = YamlParser()
+        val yamlParser = YamlParser(ObjectMapper(YAMLFactory()))
         val twitterProperties = yamlParser.fromResource("twitter.yaml", TwitterProperties::class.java)
         val twitterConfiguration = twitterConfig(twitterProperties)
         val twitterFactory = TwitterFactory(twitterConfiguration)
-        val repository = RawRecordRepository(RawRecordRepositoryProperties())
+        val repository = RawRecordRepository(RawRecordRepositoryProperties(), ObjectMapper())
+        repository.init()
         return TwitterCollector(twitterFactory.instance, TwitterCollectorProperties(), repository)
     }
 }

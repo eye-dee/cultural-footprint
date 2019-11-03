@@ -1,0 +1,5 @@
+raw:
+  record:
+    output-file: raw_records.data
+twitter:
+  requested-page-size: 300

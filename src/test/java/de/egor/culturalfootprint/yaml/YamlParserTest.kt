@@ -1,5 +1,7 @@
 package de.egor.culturalfootprint.yaml
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -7,7 +9,7 @@ internal class YamlParserTest {
 
     @Test
     fun parse() {
-        val parser = YamlParser()
+        val parser = YamlParser(ObjectMapper(YAMLFactory()))
 
         val parsedObject = parser.fromResource("parsing.yaml", ParsingClass1::class.java)
 

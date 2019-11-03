@@ -1,14 +1,25 @@
 package de.egor.culturalfootprint.record.repository
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import de.egor.culturalfootprint.record.collector.RawRecord
 import de.egor.culturalfootprint.record.collector.RecordSource
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.time.LocalDateTime
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class RawRecordRepositoryTest {
 
-    private val repository = RawRecordRepository(RawRecordRepositoryProperties(outputFile = "test.data"))
+    private val repository = RawRecordRepository(
+        RawRecordRepositoryProperties(outputFile = "test.data"), ObjectMapper()
+    )
+
+    @BeforeAll
+    fun init() {
+        repository.init()
+    }
 
     @Test
     internal fun getLastRecord() {

@@ -6,22 +6,26 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.egor.culturalfootprint.record.collector.RawRecord
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Repository
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.util.Optional
+import javax.annotation.PostConstruct
 
-class RawRecordRepository(private val properties: RawRecordRepositoryProperties) {
+@Repository
+class RawRecordRepository(
+    private val properties: RawRecordRepositoryProperties,
+    private val mapper: ObjectMapper
+) {
 
-    private val outputFile: Path
-    private val mapper: ObjectMapper = ObjectMapper()
-
-    init {
+    @PostConstruct
+    fun init() {
         mapper.registerModule(JavaTimeModule())
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         mapper.registerModule(KotlinModule())
-        outputFile = outputPath(properties)
+        val outputFile = outputPath(properties)
         if (Files.notExists(outputFile)) {
             Files.createFile(outputFile)
         }
@@ -30,7 +34,7 @@ class RawRecordRepository(private val properties: RawRecordRepositoryProperties)
     fun getLatestRecord(): Optional<RawRecord> {
         return Files.lines(outputPath(properties))
             .parallel()
-            .filter{ !it.isBlank()}
+            .filter { !it.isBlank() }
             .map { mapper.readValue<RawRecord>(it) }
             .max(Comparator.comparingLong<RawRecord> { it.source.tweetId })
     }
@@ -45,13 +49,14 @@ class RawRecordRepository(private val properties: RawRecordRepositoryProperties)
     }
 
     private fun outputPath(properties: RawRecordRepositoryProperties) =
-            Paths.get(properties.outputFile)
+        Paths.get(properties.outputFile)
 
     companion object {
         private const val LINE_SEPARATOR = 0x0A
     }
 }
 
+@ConfigurationProperties(prefix = "raw.record")
 data class RawRecordRepositoryProperties(
-        val outputFile: String = "raw_records.data"
+    var outputFile: String = "raw_records.data"
 )
