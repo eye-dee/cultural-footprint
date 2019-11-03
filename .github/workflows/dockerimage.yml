@@ -11,6 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u sausageRoll --password-stdin && docker build . --file Dockerfile --tag cultural_footprint:latest
+      run: docker login docker.pkg.github.com -u sausageRoll -p ${GITHUB_TOKEN} && docker build . --file Dockerfile --tag cultural_footprint:latest
     - name: Publish the Docker image
       run: docker push docker.pkg.github.com/sausageRoll/cultural-footprint/cultural_footprint:latest
