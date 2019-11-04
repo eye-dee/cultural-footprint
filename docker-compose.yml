@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   cultural:
-    image: cultural_footprint:${CULTURAL_IMAGE:-latest}
+    image: docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:${CULTURAL_IMAGE:-latest}
     ports:
       - "8080:8080"
     volumes:
