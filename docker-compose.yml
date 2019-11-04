@@ -1,12 +1,6 @@
 version: '3.7'
 
 services:
-  cultural:
-    image: docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:${CULTURAL_IMAGE:-latest}
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./data:/data
   mongo:
     image: mongo:${MONGO_IMAGE:-latest}
     ports:
@@ -14,5 +8,17 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-root}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS:-secret}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-cultural}
     volumes:
       - ${MONGO_DATA_PATH:-./mongo-data}:/data/db
+
+  cultural:
+    depends_on:
+      - mongo
+    image: docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:${CULTURAL_IMAGE:-latest}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      MONGO_HOST: mongo
