@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  cultural:
+    image: cultural_footprint:${CULTURAL_IMAGE:-latest}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+  mongo:
+    image: mongo:${MONGO_IMAGE:-latest}
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS:-secret}
+    volumes:
+      - ${MONGO_DATA_PATH:-./mongo-data}:/data/db
