@@ -14,20 +14,17 @@ import java.util.*
 
 @Repository
 class RawRecordRepository(
-    private val properties: RawRecordRepositoryProperties,
-    private val db: CoroutineDatabase
+    properties: RawRecordRepositoryProperties,
+    db: CoroutineDatabase
 ) {
 
     private val mapper: ObjectMapper = ObjectMapper()
-    private var collection: CoroutineCollection<RawRecord>? = null
+    private val collection: CoroutineCollection<RawRecord> = db.getCollection(properties.collection)
 
     init {
         mapper.registerModule(JavaTimeModule())
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         mapper.registerModule(KotlinModule())
-        runBlocking {
-            collection = db.getCollection<RawRecord>(properties.collection)
-        }
     }
 
     fun getLatestRecord(): Optional<RawRecord> {
@@ -36,7 +33,7 @@ class RawRecordRepository(
 
     fun save(records: List<RawRecord>) {
         runBlocking {
-            collection?.insertMany(records)
+            collection.insertMany(records)
         }
     }
 }
