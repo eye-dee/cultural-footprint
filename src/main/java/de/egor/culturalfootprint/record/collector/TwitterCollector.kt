@@ -9,6 +9,7 @@ import twitter4j.conf.Configuration
 import twitter4j.conf.ConfigurationBuilder
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.*
 import java.util.stream.Collectors.toList
 
 @Service
@@ -19,10 +20,9 @@ class TwitterCollector(
 ) {
 
     fun getRecords(): List<RawRecord> {
-        val paging = repository.getLatestRecord()
+        val paging = repository.getLatestRecordTweetId()
             .map {
-                Paging()
-                    .sinceId(it.source.tweetId)
+                Paging().sinceId(it)
             }
             .orElseGet { Paging() }
         paging.count = properties.requestedPageSize
@@ -30,6 +30,7 @@ class TwitterCollector(
             .filter { it.text != null }
             .map { tweet ->
                 RawRecord(
+                    id = UUID.randomUUID(),
                     date = tweet.createdAt?.toInstant()?.atZone(UTC_ZONE)?.toLocalDateTime() ?: LocalDateTime.now(
                         UTC_ZONE
                     ),
