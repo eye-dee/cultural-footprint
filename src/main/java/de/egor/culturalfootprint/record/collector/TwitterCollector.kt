@@ -20,10 +20,9 @@ class TwitterCollector(
 ) {
 
     fun getRecords(): List<RawRecord> {
-        val paging = repository.getLatestRecord()
+        val paging = repository.getLatestRecordTweetId()
             .map {
-                Paging()
-                    .sinceId(it.source.tweetId)
+                Paging().sinceId(it)
             }
             .orElseGet { Paging() }
         paging.count = properties.requestedPageSize
