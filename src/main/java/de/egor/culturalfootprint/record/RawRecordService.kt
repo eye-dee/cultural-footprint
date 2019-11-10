@@ -28,16 +28,20 @@ open class RawRecordService(
                 try {
                     repository.save(records)
                 } catch (e: Exception) {
-                    log.warn("Exception processing records", e)
+                    log.warn("Exception saving records", e)
                 }
             }
         }
         GlobalScope.launch {
             while (true) {
                 log.debug("Requesting records")
-                val records = collector.getRecords()
-                log.debug("Retrieved {} records", records.size)
-                channel.send(records)
+                try {
+                    val records = collector.getRecords()
+                    log.debug("Retrieved {} records", records.size)
+                    channel.send(records)
+                } catch (e: Exception) {
+                    log.warn("Exception collecting records", e)
+                }
                 delay(Duration.ofHours(1).toMillis())
             }
         }
