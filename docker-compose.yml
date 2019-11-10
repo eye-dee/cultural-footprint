@@ -12,6 +12,15 @@ services:
     volumes:
       - ${MONGO_DATA_PATH:-./mongo-data}:/data/db
 
+  python:
+    image: 2869b14b8ddf
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_USERNAME: ${MONGO_USER:-root}
+      MONGO_PASSWORD: ${MONGO_PASS:-secret}
+      MONGO_DATABASE: ${MONGO_DATABASE:-cultural}
+
   cultural:
     depends_on:
       - mongo
