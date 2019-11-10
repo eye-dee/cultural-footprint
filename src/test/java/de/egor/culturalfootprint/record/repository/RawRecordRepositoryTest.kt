@@ -9,7 +9,7 @@ import de.flapdoodle.embed.mongo.config.Net
 import de.flapdoodle.embed.mongo.distribution.Version
 import de.flapdoodle.embed.process.runtime.Network
 import kotlinx.coroutines.runBlocking
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -60,16 +60,18 @@ internal class RawRecordRepositoryTest {
 
     @Test
     internal fun getLastRecord() {
-        repository.save(
-                listOf(
-                        generateRawRecordWithId(3),
-                        generateRawRecordWithId(20),
-                        generateRawRecordWithId(5)
-                )
-        )
+        runBlocking {
+            repository.save(
+                    listOf(
+                            generateRawRecordWithId(3),
+                            generateRawRecordWithId(20),
+                            generateRawRecordWithId(5)
+                    )
+            )
 
-        val latestRecord = repository.getLatestRecordTweetId()
-        assertThat(latestRecord.get()).isEqualTo(20)
+            val latestRecord = repository.getLatestRecordTweetId()
+            Assertions.assertThat(latestRecord.get()).isEqualTo(20)
+        }
     }
 
     private fun generateRawRecordWithId(tweetId: Long) =

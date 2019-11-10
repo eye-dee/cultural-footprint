@@ -19,7 +19,7 @@ class TwitterCollector(
     private val repository: RawRecordRepository
 ) {
 
-    fun getRecords(): List<RawRecord> {
+    suspend fun getRecords(): List<RawRecord> {
         val paging = repository.getLatestRecordTweetId()
             .map {
                 Paging().sinceId(it)
