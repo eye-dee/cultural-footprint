@@ -1,6 +1,7 @@
 package de.egor.culturalfootprint.record.collector
 
 import de.egor.culturalfootprint.record.repository.RawRecordRepository
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -38,52 +39,58 @@ internal class TwitterCollectorTest {
 
     @Test
     fun processTweetWithTextAndDate() {
-        given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
-        given(collectorProperties.requestedPageSize).willReturn(300)
-        given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
-        given(status.id).willReturn(100500)
-        given(status.text).willReturn("some text")
-        val date = LocalDateTime.of(2019, 2, 13, 15, 0)
-        given(status.createdAt).willReturn(Date.from(date.toInstant(ZoneOffset.UTC)))
+        runBlocking {
+            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
+            given(collectorProperties.requestedPageSize).willReturn(300)
+            given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
+            given(status.id).willReturn(100500)
+            given(status.text).willReturn("some text")
+            val date = LocalDateTime.of(2019, 2, 13, 15, 0)
+            given(status.createdAt).willReturn(Date.from(date.toInstant(ZoneOffset.UTC)))
 
-        val records = collector.getRecords()
+            val records = collector.getRecords()
 
-        assertThat(records).isNotEmpty
-        val rawRecord = records[0]
-        assertThat(rawRecord.data).isEqualTo("some text")
-        assertThat(rawRecord.source.tweetId).isEqualTo(100500)
-        assertThat(rawRecord.date).isEqualTo(date)
+            assertThat(records).isNotEmpty
+            val rawRecord = records[0]
+            assertThat(rawRecord.data).isEqualTo("some text")
+            assertThat(rawRecord.source.tweetId).isEqualTo(100500)
+            assertThat(rawRecord.date).isEqualTo(date)
+        }
     }
 
     @Test
     fun processTweetWithTextAndNoDate() {
-        given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
-        given(collectorProperties.requestedPageSize).willReturn(300)
-        given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
-        given(status.id).willReturn(100500)
-        given(status.text).willReturn("some text")
-        val date = LocalDateTime.of(2019, 2, 13, 15, 0)
-        given(status.createdAt).willReturn(Date.from(date.toInstant(ZoneOffset.UTC)))
+        runBlocking {
+            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
+            given(collectorProperties.requestedPageSize).willReturn(300)
+            given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
+            given(status.id).willReturn(100500)
+            given(status.text).willReturn("some text")
+            val date = LocalDateTime.of(2019, 2, 13, 15, 0)
+            given(status.createdAt).willReturn(Date.from(date.toInstant(ZoneOffset.UTC)))
 
-        val records = collector.getRecords()
+            val records = collector.getRecords()
 
-        assertThat(records).isNotEmpty
-        val rawRecord = records[0]
-        assertThat(rawRecord.data).isEqualTo("some text")
-        assertThat(rawRecord.source.tweetId).isEqualTo(100500)
-        assertThat(rawRecord.date).isBefore(LocalDateTime.now(Clock.systemUTC()))
+            assertThat(records).isNotEmpty
+            val rawRecord = records[0]
+            assertThat(rawRecord.data).isEqualTo("some text")
+            assertThat(rawRecord.source.tweetId).isEqualTo(100500)
+            assertThat(rawRecord.date).isBefore(LocalDateTime.now(Clock.systemUTC()))
+        }
     }
 
     @Test
     fun skipTweetWithoutText() {
-        given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
-        given(collectorProperties.requestedPageSize).willReturn(300)
-        given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
-        given(status.text).willReturn(null)
+        runBlocking {
+            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
+            given(collectorProperties.requestedPageSize).willReturn(300)
+            given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
+            given(status.text).willReturn(null)
 
-        val records = collector.getRecords()
+            val records = collector.getRecords()
 
-        assertThat(records).isEmpty()
+            assertThat(records).isEmpty()
+        }
     }
 
     class TwitterResponseList(list: List<Status>) : ArrayList<Status>(list), ResponseList<Status> {

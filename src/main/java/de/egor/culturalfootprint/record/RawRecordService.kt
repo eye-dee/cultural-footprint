@@ -3,46 +3,48 @@ package de.egor.culturalfootprint.record
 import de.egor.culturalfootprint.record.collector.RawRecord
 import de.egor.culturalfootprint.record.collector.TwitterCollector
 import de.egor.culturalfootprint.record.repository.RawRecordRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import javax.annotation.PostConstruct
 
 @Service
 open class RawRecordService(
-    private val collector: TwitterCollector,
-    private val repository: RawRecordRepository
+        private val collector: TwitterCollector,
+        private val repository: RawRecordRepository
 ) {
 
-    private val scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
-    private val executor = Executors.newSingleThreadExecutor()
-    private val queue: BlockingQueue<List<RawRecord>> = ArrayBlockingQueue(10)
+    private val channel: Channel<List<RawRecord>> = Channel(capacity = 1000)
     private val log = LoggerFactory.getLogger(RawRecordService::class.java)
 
     @PostConstruct
     fun startPolling() {
-        log.info("Polling started")
-        scheduledExecutor.scheduleWithFixedDelay({
-            log.debug("Requesting records")
-            val records = collector.getRecords()
-            log.debug("Retrieved {} records", records.size)
-            queue.put(records)
-        }, 0, 1, TimeUnit.HOURS)
-        executor.submit {
-            while (true) {
+        GlobalScope.launch {
+            for (records in channel) {
                 try {
-                    log.debug("Polling the queue")
-                    val records = queue.take()
-                    log.debug("Processing {} records from queue", records.size)
                     repository.save(records)
-                    log.debug("Saved {} records", records.size)
                 } catch (e: Exception) {
-                    log.warn("Exception processing records", e)
+                    log.warn("Exception saving records", e)
                 }
             }
         }
+        GlobalScope.launch {
+            while (true) {
+                log.debug("Requesting records")
+                try {
+                    val records = collector.getRecords()
+                    log.debug("Retrieved {} records", records.size)
+                    channel.send(records)
+                } catch (e: Exception) {
+                    log.warn("Exception collecting records", e)
+                }
+                delay(Duration.ofHours(1).toMillis())
+            }
+        }
+        log.info("Polling started")
     }
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.egor.culturalfootprint.record.collector.RawRecord
-import kotlinx.coroutines.runBlocking
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
@@ -28,10 +27,9 @@ class RawRecordRepository(
         mapper.registerModule(KotlinModule())
     }
 
-    fun getLatestRecordTweetId(): Optional<Long> {
+    suspend fun getLatestRecordTweetId(): Optional<Long> {
 
-        return runBlocking {
-            Optional.ofNullable(collection.aggregate<MaxTweetIdAggregationResult>("""
+        return Optional.ofNullable(collection.aggregate<MaxTweetIdAggregationResult>("""
 [
     {
         ${D}match: {
@@ -46,13 +44,10 @@ class RawRecordRepository(
         }
     }
 ]""".trimIndent()).first()?.maxTweetId)
-        }
     }
 
-    fun save(records: List<RawRecord>) {
-        runBlocking {
-            collection.insertMany(records)
-        }
+    suspend fun save(records: List<RawRecord>) {
+        collection.insertMany(records)
     }
 
     companion object {
