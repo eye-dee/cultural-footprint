@@ -1,5 +1,5 @@
 - name: Deploy Cultural service
-  hosts: localhost
+  hosts: all
   gather_facts: no
   tasks:
     - name: Start up database

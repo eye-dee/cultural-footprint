@@ -37,5 +37,5 @@ jobs:
         with:
           playbookName: ./deployment/deploy.yaml
           inventoryFile: ./deployment/hosts
-          extraVars: "ansible_user=deployer ansible_password=${{ secrets.InstancePassword }}"
+          extraVars: --extra-vars "ansible_user=deployer ansible_password=${{ secrets.InstancePassword }}"
 
