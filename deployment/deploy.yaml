@@ -1,0 +1,17 @@
+- name: Deploy Cultural service
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Start up database
+      docker_compose:
+        project_src: ../
+        services: mongo
+        state: present
+
+    - name: Start up application
+      docker_compose:
+        project_src: ../
+        services: cultural
+        state: present
+        pull: yes
+        restarted: true
