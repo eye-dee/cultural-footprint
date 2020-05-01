@@ -33,9 +33,8 @@ jobs:
         run: echo ${{ secrets.InstanceIp }} > ./deployment/hosts
 
       - name: Execute Ansible Playbook
-        uses: saubermacherag/ansible-playbook-docker-action@v1.3
+        uses: arillso/action.playbook@0.0.1
         with:
-          playbookName: ./deployment/deploy.yaml
-          inventoryFile: ./deployment/hosts
-          extraVars: --extra-vars "ansible_user=deployer ansible_password=${{ secrets.InstancePassword }}"
-
+          playbook: ./deployment/deploy.yaml
+          inventory: ./deployment/hosts
+          extra_vars: ansible_user=deployer ansible_password=${{ secrets.InstancePassword }}
