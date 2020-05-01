@@ -21,3 +21,21 @@ jobs:
     - name: Publish the Docker image
       if: github.ref == 'refs/heads/master'
       run: docker push docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create inventory file
+        run: echo ${{ secrets.InstanceIp }} > ./deployment/hosts
+
+      - name: Execute Ansible Playbook
+        uses: saubermacherag/ansible-playbook-docker-action@v1.3
+        with:
+          playbookName: ./deployment/deploy.yaml
+          inventoryFile: ./deployment/hosts
+          extraVars: "ansible_user=deployer ansible_password=${{ secrets.InstancePassword }}"
+
