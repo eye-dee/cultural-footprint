@@ -23,14 +23,14 @@
             services: mongo
             state: present
 
-#        - name: Start up application
-#          docker_compose:
-#            project_src: ~/deploy-{{ timestamp }}
-#            project_name: cultural_footprint
-#            services: cultural
-#            state: present
-#            pull: yes
-#            restarted: true
+        - name: Start up application
+          docker_compose:
+            project_src: ~/deploy-{{ timestamp }}
+            project_name: cultural_footprint
+            services: cultural
+            state: present
+            pull: yes
+            restarted: true
 
       always:
         - name: Remove deployment folder
