@@ -37,4 +37,5 @@ jobs:
         with:
           playbook: ./deployment/deploy.yaml
           inventory: ./deployment/hosts
-          extra_vars: ansible_user=deployer ansible_password=${{ secrets.INSTANCE_PASSWORD }}
+          private_key: ${{ secrets.SSH_KEY }}
+          extra_vars: ansible_user=deployer
