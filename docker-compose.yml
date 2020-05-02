@@ -22,8 +22,6 @@ services:
     restart: always
 #    ports:
 #      - "8080:8080"
-    volumes:
-      - ./data:/data
     environment:
       MONGO_HOST: mongo
     logging:
