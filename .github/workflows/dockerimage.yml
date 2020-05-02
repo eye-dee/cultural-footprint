@@ -38,4 +38,4 @@ jobs:
           playbook: ./deployment/deploy.yaml
           inventory: ./deployment/hosts
           private_key: ${{ secrets.SSH_KEY }}
-          extra_vars: ansible_user=deployer
+          user: deployer
