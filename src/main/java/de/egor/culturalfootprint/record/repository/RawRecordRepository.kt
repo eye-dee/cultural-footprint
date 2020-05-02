@@ -10,7 +10,6 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Repository
-import java.util.Optional
 
 @Repository
 class RawRecordRepository(
@@ -27,10 +26,9 @@ class RawRecordRepository(
         mapper.registerModule(KotlinModule())
     }
 
-    suspend fun getLatestRecordTweetId(): Optional<Long> =
-        Optional.ofNullable(
-            collection.aggregate<MaxTweetIdAggregationResult>(
-                """
+    suspend fun getLatestRecordTweetId(): Long? =
+        collection.aggregate<MaxTweetIdAggregationResult>(
+            """
 [
     {
         ${D}match: {
@@ -45,8 +43,7 @@ class RawRecordRepository(
         }
     }
 ]""".trimIndent()
-            ).first()?.maxTweetId
-        )
+        ).first()?.maxTweetId
 
     suspend fun save(records: List<RawRecord>) {
         collection.insertMany(records)

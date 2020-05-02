@@ -70,7 +70,7 @@ internal class RawRecordRepositoryTest {
             )
 
             val latestRecord = repository.getLatestRecordTweetId()
-            Assertions.assertThat(latestRecord.get()).isEqualTo(20)
+            Assertions.assertThat(latestRecord).isEqualTo(20)
         }
     }
 

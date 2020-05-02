@@ -1,7 +1,6 @@
 package de.egor.culturalfootprint.record.collector
 
 import de.egor.culturalfootprint.record.repository.RawRecordRepository
-import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import twitter4j.Paging
@@ -22,10 +21,8 @@ class TwitterCollector(
 
     suspend fun getRecords(): List<RawRecord> {
         val paging = repository.getLatestRecordTweetId()
-            .map {
-                Paging().sinceId(it)
-            }
-            .orElseGet { Paging() }
+            ?.let { Paging().sinceId(it) }
+            ?: Paging()
         paging.count = properties.requestedPageSize
         return twitter.getHomeTimeline(paging).stream()
             .filter { it.text != null }
