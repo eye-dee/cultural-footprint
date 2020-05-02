@@ -2,6 +2,7 @@ package de.egor.culturalfootprint.record.config
 
 import de.egor.culturalfootprint.record.collector.TwitterProperties
 import de.egor.culturalfootprint.record.collector.twitterConfig
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import twitter4j.Twitter
@@ -11,13 +12,9 @@ import twitter4j.TwitterFactory
 open class TwitterConfig {
 
     @Bean
-    open fun twitter(twitterFactory: TwitterFactory): Twitter {
-        return twitterFactory.instance
-    }
+    open fun twitter(twitterFactory: TwitterFactory): Twitter = twitterFactory.instance
 
     @Bean
-    open fun twitterFactory(twitterProperties: TwitterProperties): TwitterFactory {
-        val twitterConfiguration = twitterConfig(twitterProperties)
-        return TwitterFactory(twitterConfiguration)
-    }
+    open fun twitterFactory(twitterProperties: TwitterProperties): TwitterFactory =
+        TwitterFactory(twitterConfig(twitterProperties))
 }

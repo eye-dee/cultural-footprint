@@ -10,12 +10,11 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class RawRecordRepository(
-        properties: RawRecordRepositoryProperties,
-        db: CoroutineDatabase
+    properties: RawRecordRepositoryProperties,
+    db: CoroutineDatabase
 ) {
 
     private val mapper: ObjectMapper = ObjectMapper()
@@ -27,9 +26,9 @@ class RawRecordRepository(
         mapper.registerModule(KotlinModule())
     }
 
-    suspend fun getLatestRecordTweetId(): Optional<Long> {
-
-        return Optional.ofNullable(collection.aggregate<MaxTweetIdAggregationResult>("""
+    suspend fun getLatestRecordTweetId(): Long? =
+        collection.aggregate<MaxTweetIdAggregationResult>(
+            """
 [
     {
         ${D}match: {
@@ -43,8 +42,8 @@ class RawRecordRepository(
             }
         }
     }
-]""".trimIndent()).first()?.maxTweetId)
-    }
+]""".trimIndent()
+        ).first()?.maxTweetId
 
     suspend fun save(records: List<RawRecord>) {
         collection.insertMany(records)
@@ -59,5 +58,5 @@ internal data class MaxTweetIdAggregationResult(val maxTweetId: Long?)
 
 @ConfigurationProperties(prefix = "raw.record")
 data class RawRecordRepositoryProperties(
-        var collection: String = "RawRecords"
+    var collection: String = "RawRecords"
 )

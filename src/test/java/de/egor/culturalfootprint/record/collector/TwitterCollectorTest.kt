@@ -40,7 +40,7 @@ internal class TwitterCollectorTest {
     @Test
     fun processTweetWithTextAndDate() {
         runBlocking {
-            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
+            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(10)
             given(collectorProperties.requestedPageSize).willReturn(300)
             given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
             given(status.id).willReturn(100500)
@@ -61,7 +61,7 @@ internal class TwitterCollectorTest {
     @Test
     fun processTweetWithTextAndNoDate() {
         runBlocking {
-            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
+            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(10)
             given(collectorProperties.requestedPageSize).willReturn(300)
             given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
             given(status.id).willReturn(100500)
@@ -82,7 +82,7 @@ internal class TwitterCollectorTest {
     @Test
     fun skipTweetWithoutText() {
         runBlocking {
-            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(Optional.of(10))
+            given(rawRecordRepository.getLatestRecordTweetId()).willReturn(10)
             given(collectorProperties.requestedPageSize).willReturn(300)
             given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
             given(status.text).willReturn(null)

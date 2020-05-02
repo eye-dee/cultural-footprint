@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 open class MongoConnectionConfig {
 
     @Bean
-    open fun mongoDatabase(mongoClient: MongoClient, mongoProperties: MongoProperties): CoroutineDatabase {
-        return mongoClient.getDatabase(mongoProperties.database).withKMongo().coroutine
-    }
+    open fun mongoDatabase(mongoClient: MongoClient, mongoProperties: MongoProperties): CoroutineDatabase =
+        mongoClient.getDatabase(mongoProperties.database).withKMongo().coroutine
+
 }
