@@ -16,13 +16,14 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Build the Docker image
-      if: github.ref == 'refs/heads/master'
+#      if: github.ref == 'refs/heads/master'
       run: docker login docker.pkg.github.com -u sausageRoll -p ${{ secrets.GITHUB_TOKEN }} && docker build . --file Dockerfile --tag docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:latest
     - name: Publish the Docker image
-      if: github.ref == 'refs/heads/master'
+#      if: github.ref == 'refs/heads/master'
       run: docker push docker.pkg.github.com/sausageroll/cultural-footprint/cultural_footprint:latest
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
 #    if: github.ref == 'refs/heads/master'
 
