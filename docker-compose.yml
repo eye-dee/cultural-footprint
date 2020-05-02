@@ -24,6 +24,9 @@ services:
 #      - "8080:8080"
     environment:
       MONGO_HOST: mongo
+      MONGO_USER: ${MONGO_USER:-root}
+      MONGO_PASS: ${MONGO_PASS:-secret}
+
     logging:
       driver: json-file
       options:
