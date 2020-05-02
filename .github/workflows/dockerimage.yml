@@ -39,3 +39,6 @@ jobs:
           inventory: ./deployment/hosts
           private_key: ${{ secrets.SSH_KEY }}
           user: deployer
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'false'
+          ANSIBLE_DEPRECATION_WARNINGS: 'false'
