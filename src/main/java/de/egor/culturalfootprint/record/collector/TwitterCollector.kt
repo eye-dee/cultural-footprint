@@ -10,7 +10,7 @@ import twitter4j.conf.Configuration
 import twitter4j.conf.ConfigurationBuilder
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
+import java.util.UUID
 import java.util.stream.Collectors.toList
 
 @Service
@@ -19,10 +19,8 @@ class TwitterCollector(
     private val properties: TwitterCollectorProperties,
     private val repository: RawRecordRepository
 ) {
-    private val log = LoggerFactory.getLogger(TwitterCollector::class.java)
 
     suspend fun getRecords(): List<RawRecord> {
-        log.info("twitter.configuration = ${twitter.configuration}")
         val paging = repository.getLatestRecordTweetId()
             .map {
                 Paging().sinceId(it)
@@ -62,12 +60,11 @@ data class TwitterCollectorProperties(
     var requestedPageSize: Int = 300
 )
 
-fun twitterConfig(twitterProperties: TwitterProperties): Configuration {
-    return ConfigurationBuilder()
+fun twitterConfig(twitterProperties: TwitterProperties): Configuration =
+    ConfigurationBuilder()
         .setDaemonEnabled(true)
         .setOAuthConsumerKey(twitterProperties.consumerKey)
         .setOAuthConsumerSecret(twitterProperties.consumerSecret)
         .setOAuthAccessToken(twitterProperties.accessToken)
         .setOAuthAccessTokenSecret(twitterProperties.accessTokenSecret)
         .build()
-}

@@ -11,17 +11,10 @@ import twitter4j.TwitterFactory
 @Configuration
 open class TwitterConfig {
 
-    private val log = LoggerFactory.getLogger(TwitterConfig::class.java)
+    @Bean
+    open fun twitter(twitterFactory: TwitterFactory): Twitter = twitterFactory.instance
 
     @Bean
-    open fun twitter(twitterFactory: TwitterFactory): Twitter {
-        return twitterFactory.instance
-    }
-
-    @Bean
-    open fun twitterFactory(twitterProperties: TwitterProperties): TwitterFactory {
-        log.info("twitterProperties = $twitterProperties")
-        val twitterConfiguration = twitterConfig(twitterProperties)
-        return TwitterFactory(twitterConfiguration)
-    }
+    open fun twitterFactory(twitterProperties: TwitterProperties): TwitterFactory =
+        TwitterFactory(twitterConfig(twitterProperties))
 }
