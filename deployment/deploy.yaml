@@ -31,6 +31,11 @@
             state: present
             pull: yes
             restarted: true
+            env:
+              TWITTER_API_KEY: "{{TWITTER_API_KEY}}"
+              TWITTER_API_SECRET_KEY: "{{TWITTER_API_SECRET_KEY}}"
+              TWITTER_ACCESS_TOKEN: "{{TWITTER_ACCESS_TOKEN}}"
+              TWITTER_TOKEN_SECRET: "{{TWITTER_TOKEN_SECRET}}"
 
       always:
         - name: Remove deployment folder
