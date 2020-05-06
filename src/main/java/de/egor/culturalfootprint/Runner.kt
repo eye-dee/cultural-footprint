@@ -8,7 +8,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 
 @EnableConfigurationProperties(
-    RawRecordRepositoryProperties::class, TwitterCollectorProperties::class,
+    RawRecordRepositoryProperties::class,
+    TwitterCollectorProperties::class,
     TwitterProperties::class
 )
 @SpringBootApplication
