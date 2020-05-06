@@ -8,6 +8,7 @@ import de.egor.culturalfootprint.record.collector.RawRecord
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
+import org.litote.kmongo.id.jackson.IdJacksonModule
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Repository
 
