@@ -1,8 +1,8 @@
-package de.egor.culturalfootprint.admin.repository
+package de.egor.culturalfootprint.repository
 
 import de.egor.culturalfootprint.AbstractRepositoryTest
-import de.egor.culturalfootprint.admin.model.Cluster
-import de.egor.culturalfootprint.record.collector.RawRecord
+import de.egor.culturalfootprint.model.Cluster
+import de.egor.culturalfootprint.model.RawRecord
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -35,12 +35,35 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
                 Cluster(UUID.randomUUID(), "week2")
             )
             db.getCollection<Cluster>("Clusters")
-                .insertMany(
-                    expected
-                )
+                .insertMany(expected)
 
             assertThat(clusterRepository.findClusters())
                 .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should return cluster by id when it exists`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val insertedCluster = Cluster(clusterId, "week1")
+
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isNotNull
+                .isEqualTo(insertedCluster)
+        }
+    }
+
+    @Test
+    fun `should return cluster by id doesn't exist`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isNull()
         }
     }
 
