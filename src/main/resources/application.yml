@@ -21,4 +21,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://accounts.google.com
+          issuer-uri: https://dev-423382.okta.com/oauth2/ausba82thv9r7TZ4d4x6
