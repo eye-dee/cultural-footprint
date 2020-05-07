@@ -14,6 +14,11 @@ spring:
       host: ${MONGO_HOST:localhost}
       port: ${MONGO_PORT:27017}
       database: ${MONGO_DATABASE:cultural}
-      username: ${MONGO_USER:-root}
-      password: ${MONGO_PASS:-secret}
+      username: ${MONGO_USER:root}
+      password: ${MONGO_PASS:secret}
       authentication-database: admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-423382.okta.com/oauth2/ausba82thv9r7TZ4d4x6

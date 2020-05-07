@@ -14,7 +14,6 @@ import org.springframework.boot.runApplication
 )
 @SpringBootApplication
 open class Runner
-
 fun main(args: Array<String>) {
     println("Running")
     runApplication<Runner>(*args)
