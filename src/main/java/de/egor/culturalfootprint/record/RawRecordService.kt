@@ -1,8 +1,8 @@
 package de.egor.culturalfootprint.record
 
-import de.egor.culturalfootprint.record.collector.RawRecord
+import de.egor.culturalfootprint.model.RawRecord
 import de.egor.culturalfootprint.record.collector.TwitterCollector
-import de.egor.culturalfootprint.record.repository.RawRecordRepository
+import de.egor.culturalfootprint.repository.RawRecordRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -14,8 +14,8 @@ import javax.annotation.PostConstruct
 
 @Service
 open class RawRecordService(
-        private val collector: TwitterCollector,
-        private val repository: RawRecordRepository
+    private val collector: TwitterCollector,
+    private val repository: RawRecordRepository
 ) {
 
     private val channel: Channel<List<RawRecord>> = Channel(capacity = 1000)

@@ -1,6 +1,8 @@
 package de.egor.culturalfootprint.record.collector
 
-import de.egor.culturalfootprint.record.repository.RawRecordRepository
+import de.egor.culturalfootprint.model.RawRecord
+import de.egor.culturalfootprint.model.RecordSource
+import de.egor.culturalfootprint.repository.RawRecordRepository
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import twitter4j.Paging

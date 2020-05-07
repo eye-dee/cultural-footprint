@@ -1,8 +1,9 @@
-package de.egor.culturalfootprint.admin.repository
+package de.egor.culturalfootprint.repository
 
-import de.egor.culturalfootprint.admin.model.Cluster
+import de.egor.culturalfootprint.model.Cluster
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 open class ClusterRepository(
@@ -15,4 +16,7 @@ open class ClusterRepository(
         col.find()
             .limit(10)
             .toList()
+
+    suspend fun findClusterById(clusterId: UUID): Cluster? =
+        col.findOneById(clusterId)
 }

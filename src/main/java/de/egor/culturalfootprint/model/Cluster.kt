@@ -1,4 +1,4 @@
-package de.egor.culturalfootprint.admin.model
+package de.egor.culturalfootprint.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import java.util.UUID

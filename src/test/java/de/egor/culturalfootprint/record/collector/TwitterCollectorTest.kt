@@ -1,6 +1,6 @@
 package de.egor.culturalfootprint.record.collector
 
-import de.egor.culturalfootprint.record.repository.RawRecordRepository
+import de.egor.culturalfootprint.repository.RawRecordRepository
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

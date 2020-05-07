@@ -1,16 +1,17 @@
-package de.egor.culturalfootprint.record.repository
+package de.egor.culturalfootprint.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import de.egor.culturalfootprint.record.collector.RawRecord
+import de.egor.culturalfootprint.model.RawRecord
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
-import org.litote.kmongo.id.jackson.IdJacksonModule
+import org.litote.kmongo.eq
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 class RawRecordRepository(
@@ -49,6 +50,10 @@ class RawRecordRepository(
     suspend fun save(records: List<RawRecord>) {
         collection.insertMany(records)
     }
+
+    suspend fun findAllByClusterId(clusterId: UUID): List<RawRecord> =
+        collection.find(RawRecord::cluster eq clusterId)
+            .toList()
 
     companion object {
         private const val D = "$"

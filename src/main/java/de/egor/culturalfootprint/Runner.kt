@@ -2,7 +2,7 @@ package de.egor.culturalfootprint
 
 import de.egor.culturalfootprint.record.collector.TwitterCollectorProperties
 import de.egor.culturalfootprint.record.collector.TwitterProperties
-import de.egor.culturalfootprint.record.repository.RawRecordRepositoryProperties
+import de.egor.culturalfootprint.repository.RawRecordRepositoryProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
