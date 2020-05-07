@@ -65,6 +65,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 dependencies {
     implementation('org.springframework.boot:spring-boot-dependencies:2.2.0.RELEASE')
     implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation('org.springframework:spring-security-oauth2-resource-server')
+    implementation('org.springframework:spring-security-oauth2-jose')
 
     implementation('com.fasterxml.jackson.core:jackson-core')
     implementation('com.fasterxml.jackson.core:jackson-annotations')
