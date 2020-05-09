@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.egor.culturalfootprint.model.RawRecord
+import de.egor.culturalfootprint.repository.MongoUtils.D
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
 import org.litote.kmongo.eq
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Repository
-import java.util.UUID
+import java.util.*
 
 @Repository
 class RawRecordRepository(
@@ -55,9 +56,10 @@ class RawRecordRepository(
         collection.find(RawRecord::cluster eq clusterId)
             .toList()
 
-    companion object {
-        private const val D = "$"
-    }
+}
+
+object MongoUtils {
+    const val D = "$"
 }
 
 internal data class MaxTweetIdAggregationResult(val maxTweetId: Long?)

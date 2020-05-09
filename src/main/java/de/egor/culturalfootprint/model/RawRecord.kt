@@ -1,6 +1,7 @@
 package de.egor.culturalfootprint.model
 
 import org.bson.codecs.pojo.annotations.BsonId
+import org.springframework.stereotype.Indexed
 import java.time.LocalDateTime
 import java.time.temporal.IsoFields
 import java.util.UUID
