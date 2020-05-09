@@ -31,13 +31,13 @@ internal class WeekRepositoryTest : AbstractRepositoryTest() {
     fun `should return results when collection has some elements`() {
         runBlocking {
             db.getCollection<Cluster>("Clusters")
-                    .insertOne(Cluster(UUID.randomUUID(), "2020-10"))
+                    .insertOne(Cluster(UUID.randomUUID(), "2020-01"))
             val expected = listOf(
                     Cluster(UUID.randomUUID(), "2020-60"),
                     Cluster(UUID.randomUUID(), "2020-50"),
                     Cluster(UUID.randomUUID(), "2020-40"),
                     Cluster(UUID.randomUUID(), "2020-30"),
-                    Cluster(UUID.randomUUID(), "2020-20")
+                    Cluster(UUID.randomUUID(), "2020-05")
             )
             db.getCollection<Cluster>("Clusters")
                 .insertMany(expected)
