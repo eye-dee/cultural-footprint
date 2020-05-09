@@ -5,7 +5,7 @@ import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.service.ClusterService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/clusters")

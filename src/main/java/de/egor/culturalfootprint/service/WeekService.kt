@@ -1,6 +1,5 @@
 package de.egor.culturalfootprint.service
 
-import de.egor.culturalfootprint.repository.ClusterRepository
 import de.egor.culturalfootprint.repository.WeekRepository
 import org.springframework.stereotype.Service
 

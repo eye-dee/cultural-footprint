@@ -5,7 +5,7 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Repository
 open class ClusterRepository(

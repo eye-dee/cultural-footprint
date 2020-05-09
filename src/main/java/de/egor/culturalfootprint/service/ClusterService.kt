@@ -5,7 +5,7 @@ import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.repository.ClusterRepository
 import de.egor.culturalfootprint.repository.RawRecordRepository
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class ClusterService(
