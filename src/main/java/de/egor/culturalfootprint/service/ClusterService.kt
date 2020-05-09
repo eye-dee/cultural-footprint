@@ -1,6 +1,7 @@
 package de.egor.culturalfootprint.service
 
 import de.egor.culturalfootprint.admin.dto.ClusterResult
+import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.repository.ClusterRepository
 import de.egor.culturalfootprint.repository.RawRecordRepository
 import org.springframework.stereotype.Service
@@ -12,7 +13,9 @@ class ClusterService(
     private val rawRecordRepository: RawRecordRepository
 ) {
 
-    suspend fun findCluster() = clusterRepository.findClusters()
+    suspend fun findCluster(week: String?): List<Cluster> =
+            week?.let { clusterRepository.findClustersByWeek(week) }
+                    ?: clusterRepository.findClusters()
 
     suspend fun findClusterById(clusterId: UUID): ClusterResult? =
         clusterRepository.findClusterById(clusterId)

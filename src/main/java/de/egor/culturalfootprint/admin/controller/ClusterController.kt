@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
@@ -17,7 +18,8 @@ class ClusterController(
 ) {
 
     @GetMapping
-    suspend fun readAll(): List<Cluster> = clusterService.findCluster()
+    suspend fun readAll(@RequestParam(required = false) week: String?): List<Cluster> =
+            clusterService.findCluster(week)
 
     @GetMapping("{clusterId}")
     suspend fun readCluster(@PathVariable("clusterId") clusterId: UUID): ResponseEntity<ClusterResult> =

@@ -12,7 +12,7 @@ import org.litote.kmongo.coroutine.aggregate
 import org.litote.kmongo.eq
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Repository
 class RawRecordRepository(

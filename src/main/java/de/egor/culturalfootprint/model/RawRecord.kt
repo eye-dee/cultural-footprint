@@ -3,7 +3,7 @@ package de.egor.culturalfootprint.model
 import org.bson.codecs.pojo.annotations.BsonId
 import java.time.LocalDateTime
 import java.time.temporal.IsoFields
-import java.util.*
+import java.util.UUID
 
 data class RawRecord(
     @BsonId val id: UUID,
