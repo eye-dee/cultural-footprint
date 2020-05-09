@@ -7,10 +7,10 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 
 internal class ClusterRepositoryTest : AbstractRepositoryTest() {
-    val clusterRepository = ClusterRepository(db)
+    private val clusterRepository = ClusterRepository(db)
 
     @BeforeEach
     internal fun setUpEach() {
@@ -31,14 +31,38 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
     fun `should return results when collection has some elements`() {
         runBlocking {
             val expected = listOf(
-                Cluster(UUID.randomUUID(), "week1"),
-                Cluster(UUID.randomUUID(), "week2")
+                Cluster(UUID.randomUUID(), "2020-05"),
+                Cluster(UUID.randomUUID(), "2020-04")
             )
             db.getCollection<Cluster>("Clusters")
                 .insertMany(expected)
 
             assertThat(clusterRepository.findClusters())
                 .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should find zero results by week when collection is empty`() {
+        runBlocking {
+            assertThat(clusterRepository.findClustersByWeek("2020-05"))
+                    .isEmpty()
+        }
+    }
+
+    @Test
+    fun `should return results by week when collection has some elements`() {
+        runBlocking {
+            db.getCollection<Cluster>("Clusters")
+                    .insertOne(Cluster(UUID.randomUUID(), "2020-05"))
+            val expected = listOf(
+                    Cluster(UUID.randomUUID(), "2020-06")
+            )
+            db.getCollection<Cluster>("Clusters")
+                    .insertMany(expected)
+
+            assertThat(clusterRepository.findClustersByWeek("2020-06"))
+                    .isEqualTo(expected)
         }
     }
 
