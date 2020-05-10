@@ -12,7 +12,8 @@ data class RawRecord(
     val source: RecordSource,
     val data: String,
     val cluster: UUID? = null,
-    val week: String = currentWeek(date)
+    val week: String = currentWeek(date),
+    val approved: Boolean? = false
 )
 
 private fun currentWeek(date: LocalDateTime): String {

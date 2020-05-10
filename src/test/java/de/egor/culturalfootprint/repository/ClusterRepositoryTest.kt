@@ -2,12 +2,13 @@ package de.egor.culturalfootprint.repository
 
 import de.egor.culturalfootprint.AbstractRepositoryTest
 import de.egor.culturalfootprint.model.Cluster
+import de.egor.culturalfootprint.model.ClusterStatus
 import de.egor.culturalfootprint.model.RawRecord
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 internal class ClusterRepositoryTest : AbstractRepositoryTest() {
     private val clusterRepository = ClusterRepository(db)
@@ -91,4 +92,37 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
         }
     }
 
+    @Test
+    internal fun `should return true if status is updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            db.getCollection<Cluster>("Clusters")
+                    .insertOne(Cluster(clusterId, "2020-05"))
+            assertThat(clusterRepository.findClusterById(clusterId)!!.status)
+                    .isNull()
+
+            val result = clusterRepository.updateStatus(clusterId, ClusterStatus.APPROVED)
+
+            assertThat(result).isTrue()
+            assertThat(clusterRepository.findClusterById(clusterId)!!.status)
+                    .isEqualTo(ClusterStatus.APPROVED)
+        }
+    }
+
+    @Test
+    internal fun `should return false if cluster is not found and status is not updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            db.getCollection<Cluster>("Clusters")
+                    .insertOne(Cluster(clusterId, "2020-05"))
+            assertThat(clusterRepository.findClusterById(clusterId)!!.status)
+                    .isNull()
+
+            val result = clusterRepository.updateStatus(UUID.randomUUID(), ClusterStatus.APPROVED)
+
+            assertThat(result).isFalse()
+            assertThat(clusterRepository.findClusterById(clusterId)!!.status)
+                    .isNull()
+        }
+    }
 }
