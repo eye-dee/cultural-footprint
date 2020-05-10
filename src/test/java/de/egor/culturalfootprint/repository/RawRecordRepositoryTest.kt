@@ -79,6 +79,50 @@ internal class RawRecordRepositoryTest : AbstractRepositoryTest() {
         }
     }
 
+    @Test
+    internal fun `should return true if approved field is set to true`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val rawRecord = generateRawRecordWithId(100, clusterId)
+            db.getCollection<RawRecord>("RawRecords")
+                    .insertOne(rawRecord)
+            assertThat(repository.findAllByClusterId(clusterId))
+                    .hasSize(1)
+                    .first()
+                    .satisfies { assertThat(it.approved).isIn(null, false) }
+
+            val result = repository.updateApproval(rawRecord.id, true)
+
+            assertThat(result).isTrue()
+            assertThat(repository.findAllByClusterId(clusterId))
+                    .hasSize(1)
+                    .first()
+                    .satisfies { assertThat(it.approved).isTrue() }
+        }
+    }
+
+    @Test
+    internal fun `should return false if cluster is not found and status is not updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val rawRecord = generateRawRecordWithId(100, clusterId)
+            db.getCollection<RawRecord>("RawRecords")
+                    .insertOne(rawRecord)
+            assertThat(repository.findAllByClusterId(clusterId))
+                    .hasSize(1)
+                    .first()
+                    .satisfies { assertThat(it.approved).isIn(null, false) }
+
+            val result = repository.updateApproval(UUID.randomUUID(), true)
+
+            assertThat(result).isFalse()
+            assertThat(repository.findAllByClusterId(clusterId))
+                    .hasSize(1)
+                    .first()
+                    .satisfies { assertThat(it.approved).isIn(null, false) }
+        }
+    }
+
     private fun generateRawRecordWithId(tweetId: Long, clusterId: UUID = UUID.randomUUID()) =
         RawRecord(
             date = LocalDateTime.now(),
