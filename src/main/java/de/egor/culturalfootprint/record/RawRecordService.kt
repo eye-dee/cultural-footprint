@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Duration
+import java.util.UUID
 import javax.annotation.PostConstruct
 
 @Service
@@ -47,4 +48,10 @@ open class RawRecordService(
         }
         log.info("Polling started")
     }
+
+    suspend fun submitApproval(recordId: UUID): Boolean =
+        repository.updateApproval(recordId, true)
+
+    suspend fun withdrawApproval(recordId: UUID): Boolean =
+            repository.updateApproval(recordId, false)
 }
