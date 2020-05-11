@@ -125,4 +125,38 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
                     .isNull()
         }
     }
+
+  @Test
+  internal fun `should return true if name is updated`() {
+    runBlocking {
+      val clusterId = UUID.randomUUID()
+      db.getCollection<Cluster>("Clusters")
+          .insertOne(Cluster(clusterId, "2020-05"))
+      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+          .isNull()
+
+      val result = clusterRepository.updateName(clusterId, "updated name")
+
+      assertThat(result).isTrue()
+      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+          .isEqualTo("updated name")
+    }
+  }
+
+  @Test
+  internal fun `should return false if cluster is not found and name is not updated`() {
+    runBlocking {
+      val clusterId = UUID.randomUUID()
+      db.getCollection<Cluster>("Clusters")
+          .insertOne(Cluster(clusterId, "2020-05"))
+      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+          .isNull()
+
+      val result = clusterRepository.updateName(UUID.randomUUID(), "updated name")
+
+      assertThat(result).isFalse()
+      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+          .isNull()
+    }
+  }
 }

@@ -6,7 +6,8 @@ import java.util.UUID
 data class Cluster(
     @BsonId val id: UUID,
     val week: String,
-    val status: ClusterStatus? = null
+    val status: ClusterStatus? = null,
+    val name: String? = null
 )
 
 enum class ClusterStatus {

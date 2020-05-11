@@ -15,24 +15,30 @@ open class ClusterRepository(
     db: CoroutineDatabase
 ) {
 
-    private val col = db.getCollection<Cluster>("Clusters")
+  private val col = db.getCollection<Cluster>("Clusters")
 
-    suspend fun findClusters() =
-        col.find()
-            .limit(50)
-            .sort(descending(Cluster::week))
-            .toList()
+  suspend fun findClusters() =
+      col.find()
+          .limit(50)
+          .sort(descending(Cluster::week))
+          .toList()
 
-    suspend fun findClustersByWeek(week: String): List<Cluster> =
-            col.find(Cluster::week eq week)
-                .toList()
+  suspend fun findClustersByWeek(week: String): List<Cluster> =
+      col.find(Cluster::week eq week)
+          .toList()
 
-    suspend fun findClusterById(clusterId: UUID): Cluster? =
-        col.findOneById(clusterId)
+  suspend fun findClusterById(clusterId: UUID): Cluster? =
+      col.findOneById(clusterId)
 
-    suspend fun updateStatus(clusterId: UUID, status: ClusterStatus): Boolean =
-            col.updateOne(
-                    Cluster::id eq clusterId,
-                    set(SetTo(Cluster::status, status))
-            ).matchedCount > 0
+  suspend fun updateStatus(clusterId: UUID, status: ClusterStatus): Boolean =
+      col.updateOne(
+          Cluster::id eq clusterId,
+          set(SetTo(Cluster::status, status))
+      ).matchedCount > 0
+
+  suspend fun updateName(clusterId: UUID, name: String): Boolean =
+      col.updateOne(
+          Cluster::id eq clusterId,
+          set(SetTo(Cluster::name, name))
+      ).matchedCount > 0
 }
