@@ -33,7 +33,8 @@ class ClusterService(
     suspend fun submitDeclination(clusterId: UUID): Boolean =
         clusterRepository.updateStatus(clusterId, ClusterStatus.DECLINED)
 
-    suspend fun updateName(clusterId: UUID, name: String): Boolean {
+    suspend fun updateName(clusterId: UUID, name: String) = 
+    clusterRepository.updateName(clusterId, name)
         return clusterRepository.updateName(clusterId, name)
     }
 }
