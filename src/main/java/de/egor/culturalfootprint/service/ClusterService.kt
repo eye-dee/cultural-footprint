@@ -15,8 +15,17 @@ class ClusterService(
 ) {
 
     suspend fun findCluster(week: String?): List<Cluster> =
-            week?.let { clusterRepository.findClustersByWeek(week) }
-                    ?: clusterRepository.findClusters()
+        week?.let { clusterRepository.findClustersByWeek(week) }
+            ?: clusterRepository.findClusters()
+
+    suspend fun findApprovedDataFor(clusterId: UUID): ClusterResult? =
+        clusterRepository.findClusterById(clusterId)
+            ?.let {
+                ClusterResult(
+                    cluster = it,
+                    records = rawRecordRepository.findAllByClusterIdAndApproved(clusterId)
+                )
+            }
 
     suspend fun findClusterById(clusterId: UUID): ClusterResult? =
         clusterRepository.findClusterById(clusterId)
