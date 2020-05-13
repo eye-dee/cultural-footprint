@@ -7,7 +7,8 @@ data class Cluster(
     @BsonId val id: UUID,
     val week: String,
     val status: ClusterStatus? = null,
-    val name: String? = null
+    val name: String? = null,
+    val published: Boolean = false
 )
 
 enum class ClusterStatus {

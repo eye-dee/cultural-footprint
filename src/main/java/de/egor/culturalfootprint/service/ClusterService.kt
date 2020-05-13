@@ -44,4 +44,6 @@ class ClusterService(
 
     suspend fun updateName(clusterId: UUID, name: String) =
         clusterRepository.updateName(clusterId, name)
+
+    suspend fun publish(clusterId: UUID): Boolean = clusterRepository.makePublished(clusterId)
 }

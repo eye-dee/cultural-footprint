@@ -3,12 +3,13 @@ package de.egor.culturalfootprint.repository
 import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.model.ClusterStatus
 import org.litote.kmongo.SetTo
+import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
+import org.litote.kmongo.or
 import org.litote.kmongo.set
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
 import java.util.UUID
@@ -38,6 +39,15 @@ open class ClusterRepository(
       col.updateOne(
           Cluster::id eq clusterId,
           set(SetTo(Cluster::status, status))
+      ).matchedCount > 0
+
+  suspend fun makePublished(clusterId: UUID): Boolean =
+      col.updateOne(
+          and(
+              Cluster::id eq clusterId,
+              or(Cluster::published eq null, Cluster::published eq false)
+          ),
+          set(SetTo(Cluster::published, true))
       ).matchedCount > 0
 
   suspend fun updateName(clusterId: UUID, name: String): Boolean =
