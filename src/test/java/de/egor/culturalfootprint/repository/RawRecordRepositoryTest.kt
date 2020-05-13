@@ -6,7 +6,6 @@ import de.egor.culturalfootprint.model.RecordSource
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -26,11 +25,6 @@ internal class RawRecordRepositoryTest : AbstractRepositoryTest() {
         runBlocking {
             db.getCollection<RawRecord>("RawRecords").deleteMany("{}")
         }
-    }
-
-    @AfterAll
-    internal fun tearDown() {
-        mongodExecutable.stop()
     }
 
     @Test

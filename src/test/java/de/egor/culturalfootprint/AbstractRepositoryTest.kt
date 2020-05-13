@@ -10,8 +10,8 @@ import org.litote.kmongo.reactivestreams.KMongo
 
 open class AbstractRepositoryTest {
     companion object {
-        private val ip = "localhost"
-        private val port = 27017
+        private const val ip = "localhost"
+        private const val port = 27017
 
         private val mongodConfig = MongodConfigBuilder().version(Version.Main.PRODUCTION)
             .net(Net(ip, port, Network.localhostIsIPv6()))

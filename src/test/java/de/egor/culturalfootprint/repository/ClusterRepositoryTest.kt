@@ -8,8 +8,10 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.util.UUID
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ClusterRepositoryTest : AbstractRepositoryTest() {
     private val clusterRepository = ClusterRepository(db, ClusterRepositoryProperties())
 
