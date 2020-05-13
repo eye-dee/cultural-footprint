@@ -22,8 +22,7 @@ class PublisherService(
 
     suspend fun publishClusterForAllUsers(clusterId: UUID) {
         GlobalScope.launch(context) {
-            clusterService.findClusterById(clusterId)
-                .also { print(it) }
+            clusterService.findApprovedDataFor(clusterId)
                 ?.let { cluster -> messageBuilder.buildMessage(cluster) }
                 ?.also { message ->
                     userService.findAll().collect { user ->
