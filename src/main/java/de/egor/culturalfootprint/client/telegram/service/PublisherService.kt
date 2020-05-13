@@ -28,7 +28,12 @@ class PublisherService(
                         ?.let { cluster -> messageBuilder.buildMessage(cluster) }
                         ?.also { message ->
                             userService.findAll().collect { user ->
-                                bot.sendMessage(user.chatId, message)
+                                bot.sendMessage(
+                                    chatId = user.chatId,
+                                    text = message,
+                                    parseMode = "Markdown",
+                                    disableWebPagePreview = true
+                                )
                                 delay(100)
                             }
                         }
