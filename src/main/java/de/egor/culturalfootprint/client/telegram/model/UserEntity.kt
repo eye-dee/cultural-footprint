@@ -1,10 +1,10 @@
 package de.egor.culturalfootprint.client.telegram.model
 
 import org.bson.codecs.pojo.annotations.BsonId
-import org.litote.kmongo.Id
+import java.util.UUID
 
 data class UserEntity(
-    @BsonId val id: Id<UserEntity>? = null,
+    @BsonId val id: UUID = UUID.randomUUID(),
     val chatId: Long,
     val firstName: String?,
     val lastName: String?,

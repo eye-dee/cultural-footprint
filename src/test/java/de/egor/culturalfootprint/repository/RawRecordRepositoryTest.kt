@@ -85,19 +85,19 @@ internal class RawRecordRepositoryTest : AbstractRepositoryTest() {
             val clusterId = UUID.randomUUID()
             val rawRecord = generateRawRecordWithId(100, clusterId)
             db.getCollection<RawRecord>("RawRecords")
-                    .insertOne(rawRecord)
+                .insertOne(rawRecord)
             assertThat(repository.findAllByClusterId(clusterId))
-                    .hasSize(1)
-                    .first()
-                    .satisfies { assertThat(it.approved).isIn(null, false) }
+                .hasSize(1)
+                .first()
+                .satisfies { assertThat(it.approved).isIn(null, false) }
 
             val result = repository.updateApproval(rawRecord.id, true)
 
             assertThat(result).isTrue()
             assertThat(repository.findAllByClusterId(clusterId))
-                    .hasSize(1)
-                    .first()
-                    .satisfies { assertThat(it.approved).isTrue() }
+                .hasSize(1)
+                .first()
+                .satisfies { assertThat(it.approved).isTrue() }
         }
     }
 
@@ -107,28 +107,54 @@ internal class RawRecordRepositoryTest : AbstractRepositoryTest() {
             val clusterId = UUID.randomUUID()
             val rawRecord = generateRawRecordWithId(100, clusterId)
             db.getCollection<RawRecord>("RawRecords")
-                    .insertOne(rawRecord)
+                .insertOne(rawRecord)
             assertThat(repository.findAllByClusterId(clusterId))
-                    .hasSize(1)
-                    .first()
-                    .satisfies { assertThat(it.approved).isIn(null, false) }
+                .hasSize(1)
+                .first()
+                .satisfies { assertThat(it.approved).isIn(null, false) }
 
             val result = repository.updateApproval(UUID.randomUUID(), true)
 
             assertThat(result).isFalse()
             assertThat(repository.findAllByClusterId(clusterId))
-                    .hasSize(1)
-                    .first()
-                    .satisfies { assertThat(it.approved).isIn(null, false) }
+                .hasSize(1)
+                .first()
+                .satisfies { assertThat(it.approved).isIn(null, false) }
         }
     }
 
-    private fun generateRawRecordWithId(tweetId: Long, clusterId: UUID = UUID.randomUUID()) =
+    @Test
+    fun `should return only approved and clusterId records`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val expected = generateRawRecordWithId(201, clusterId, true)
+            db.getCollection<RawRecord>("RawRecords")
+                .insertMany(
+                    listOf(
+                        generateRawRecordWithId(200, clusterId, false),
+                        expected,
+                        generateRawRecordWithId(202, UUID.randomUUID(), true)
+                    )
+                )
+
+            assertThat(repository.findAllByClusterIdAndApproved(clusterId))
+                .hasSize(1)
+                .usingElementComparatorIgnoringFields("date")
+                .containsExactly(expected)
+        }
+    }
+
+    private fun generateRawRecordWithId(
+        tweetId: Long,
+        clusterId: UUID = UUID.randomUUID(),
+        approved: Boolean = false
+    ) =
         RawRecord(
             date = LocalDateTime.now(),
             data = "test data",
             source = RecordSource(tweetId),
             id = UUID.randomUUID(),
-            cluster = clusterId
+            cluster = clusterId,
+            approved = approved
         )
 }

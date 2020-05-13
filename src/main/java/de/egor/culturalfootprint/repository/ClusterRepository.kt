@@ -7,15 +7,19 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import org.litote.kmongo.set
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
 open class ClusterRepository(
-    db: CoroutineDatabase
+    db: CoroutineDatabase,
+    properties: ClusterRepositoryProperties
 ) {
 
-  private val col = db.getCollection<Cluster>("Clusters")
+  private val col = db.getCollection<Cluster>(properties.collection)
 
   suspend fun findClusters() =
       col.find()
@@ -42,3 +46,9 @@ open class ClusterRepository(
           set(SetTo(Cluster::name, name))
       ).matchedCount > 0
 }
+
+@Component
+@ConfigurationProperties(prefix = "clusters")
+data class ClusterRepositoryProperties(
+    var collection: String = "Clusters"
+)

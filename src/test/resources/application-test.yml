@@ -1,6 +1,3 @@
-raw:
-  record:
-    output-file: test.data
 twitter:
   consumerKey: kf0mkZoYC9REWNfr3sfq30Iyg
   consumerSecret: yy3yfzrWNallw5PCWdZUIMoY7AOqMwKVBRlsMuJPrrghOwAOs5
