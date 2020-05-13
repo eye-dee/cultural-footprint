@@ -1,6 +1,3 @@
-raw:
-  record:
-    output-file: raw_records.data
 telegram:
   botUsername: ${TELEGRAM_BOT_USERNAME}
   token: ${TELEGRAM_BOT_TOKEN}

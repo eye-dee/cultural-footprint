@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.egor.culturalfootprint.model.RawRecord
 import de.egor.culturalfootprint.repository.MongoUtils.D
 import org.litote.kmongo.SetTo
+import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
@@ -58,11 +59,20 @@ class RawRecordRepository(
         collection.find(RawRecord::cluster eq clusterId)
             .toList()
 
+    suspend fun findAllByClusterIdAndApproved(clusterId: UUID): List<RawRecord> =
+        collection.find(
+            and(
+                RawRecord::cluster eq clusterId,
+                RawRecord::approved eq true
+            )
+        )
+            .toList()
+
     suspend fun updateApproval(recordId: UUID, newValue: Boolean): Boolean =
         collection.updateOne(
             RawRecord::id eq recordId,
             set(SetTo(RawRecord::approved, newValue))
-    ).matchedCount > 0
+        ).matchedCount > 0
 
 }
 

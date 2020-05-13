@@ -8,10 +8,12 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.util.UUID
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ClusterRepositoryTest : AbstractRepositoryTest() {
-    private val clusterRepository = ClusterRepository(db)
+    private val clusterRepository = ClusterRepository(db, ClusterRepositoryProperties())
 
     @BeforeEach
     internal fun setUpEach() {
@@ -47,7 +49,7 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
     fun `should find zero results by week when collection is empty`() {
         runBlocking {
             assertThat(clusterRepository.findClustersByWeek("2020-05"))
-                    .isEmpty()
+                .isEmpty()
         }
     }
 
@@ -55,15 +57,15 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
     fun `should return results by week when collection has some elements`() {
         runBlocking {
             db.getCollection<Cluster>("Clusters")
-                    .insertOne(Cluster(UUID.randomUUID(), "2020-05"))
+                .insertOne(Cluster(UUID.randomUUID(), "2020-05"))
             val expected = listOf(
-                    Cluster(UUID.randomUUID(), "2020-06")
+                Cluster(UUID.randomUUID(), "2020-06")
             )
             db.getCollection<Cluster>("Clusters")
-                    .insertMany(expected)
+                .insertMany(expected)
 
             assertThat(clusterRepository.findClustersByWeek("2020-06"))
-                    .isEqualTo(expected)
+                .isEqualTo(expected)
         }
     }
 
@@ -97,15 +99,15 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
         runBlocking {
             val clusterId = UUID.randomUUID()
             db.getCollection<Cluster>("Clusters")
-                    .insertOne(Cluster(clusterId, "2020-05"))
+                .insertOne(Cluster(clusterId, "2020-05"))
             assertThat(clusterRepository.findClusterById(clusterId)!!.status)
-                    .isNull()
+                .isNull()
 
             val result = clusterRepository.updateStatus(clusterId, ClusterStatus.APPROVED)
 
             assertThat(result).isTrue()
             assertThat(clusterRepository.findClusterById(clusterId)!!.status)
-                    .isEqualTo(ClusterStatus.APPROVED)
+                .isEqualTo(ClusterStatus.APPROVED)
         }
     }
 
@@ -114,49 +116,49 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
         runBlocking {
             val clusterId = UUID.randomUUID()
             db.getCollection<Cluster>("Clusters")
-                    .insertOne(Cluster(clusterId, "2020-05"))
+                .insertOne(Cluster(clusterId, "2020-05"))
             assertThat(clusterRepository.findClusterById(clusterId)!!.status)
-                    .isNull()
+                .isNull()
 
             val result = clusterRepository.updateStatus(UUID.randomUUID(), ClusterStatus.APPROVED)
 
             assertThat(result).isFalse()
             assertThat(clusterRepository.findClusterById(clusterId)!!.status)
-                    .isNull()
+                .isNull()
         }
     }
 
-  @Test
-  internal fun `should return true if name is updated`() {
-    runBlocking {
-      val clusterId = UUID.randomUUID()
-      db.getCollection<Cluster>("Clusters")
-          .insertOne(Cluster(clusterId, "2020-05"))
-      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
-          .isNull()
+    @Test
+    internal fun `should return true if name is updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(Cluster(clusterId, "2020-05"))
+            assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+                .isNull()
 
-      val result = clusterRepository.updateName(clusterId, "updated name")
+            val result = clusterRepository.updateName(clusterId, "updated name")
 
-      assertThat(result).isTrue()
-      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
-          .isEqualTo("updated name")
+            assertThat(result).isTrue()
+            assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+                .isEqualTo("updated name")
+        }
     }
-  }
 
-  @Test
-  internal fun `should return false if cluster is not found and name is not updated`() {
-    runBlocking {
-      val clusterId = UUID.randomUUID()
-      db.getCollection<Cluster>("Clusters")
-          .insertOne(Cluster(clusterId, "2020-05"))
-      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
-          .isNull()
+    @Test
+    internal fun `should return false if cluster is not found and name is not updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(Cluster(clusterId, "2020-05"))
+            assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+                .isNull()
 
-      val result = clusterRepository.updateName(UUID.randomUUID(), "updated name")
+            val result = clusterRepository.updateName(UUID.randomUUID(), "updated name")
 
-      assertThat(result).isFalse()
-      assertThat(clusterRepository.findClusterById(clusterId)!!.name)
-          .isNull()
+            assertThat(result).isFalse()
+            assertThat(clusterRepository.findClusterById(clusterId)!!.name)
+                .isNull()
+        }
     }
-  }
 }
