@@ -117,9 +117,6 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
             val clusterId = UUID.randomUUID()
             db.getCollection<Cluster>("Clusters")
                 .insertOne(Cluster(clusterId, "2020-05"))
-
-            db.getCollection<Cluster>("Clusters")
-                .insertOne(Cluster(clusterId, "2020-05"))
             assertThat(clusterRepository.findClusterById(clusterId)!!.status)
                 .isNull()
 
