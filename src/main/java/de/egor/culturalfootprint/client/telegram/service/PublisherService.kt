@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -18,6 +19,7 @@ class PublisherService(
     private val bot: Bot
 ) {
 
+    private val log = LoggerFactory.getLogger(PublisherService::class.java)
     private val context = newFixedThreadPoolContext(2, "cluster-publisher")
 
     suspend fun publishClusterForAllUsers(clusterId: UUID) {
@@ -33,7 +35,11 @@ class PublisherService(
                                     text = message,
                                     parseMode = "Markdown",
                                     disableWebPagePreview = true
-                                )
+                                ).whenComplete { _, ex ->
+                                    ex?.also {
+                                        log.warn("Exception acquired during acquired", it)
+                                    }
+                                }
                                 delay(100)
                             }
                         }

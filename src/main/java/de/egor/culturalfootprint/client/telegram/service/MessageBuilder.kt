@@ -8,7 +8,7 @@ class MessageBuilder {
 
     fun buildMessage(clusterResult: ClusterResult): String =
         "*${clusterResult.cluster.name}*\n" +
-        clusterResult.records.fold("") { acc, record ->
-            acc + "\n_______________________________\n\n" + record.data
-        }
+            clusterResult.records.joinToString(
+                "\n\n\n"
+            ) { it.data }
 }
