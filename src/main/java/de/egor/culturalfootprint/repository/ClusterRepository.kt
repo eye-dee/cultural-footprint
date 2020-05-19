@@ -7,6 +7,7 @@ import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
+import org.litote.kmongo.ne
 import org.litote.kmongo.or
 import org.litote.kmongo.set
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -45,6 +46,8 @@ open class ClusterRepository(
       col.updateOne(
           and(
               Cluster::id eq clusterId,
+              Cluster::name ne null,
+              Cluster::status eq ClusterStatus.APPROVED,
               or(Cluster::published eq null, Cluster::published eq false)
           ),
           set(SetTo(Cluster::published, true))

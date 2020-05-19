@@ -166,8 +166,14 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
     internal fun `should return true if published is updated`() {
         runBlocking {
             val clusterId = UUID.randomUUID()
+            val cluster = Cluster(
+                id = clusterId,
+                week = "2020-05",
+                status = ClusterStatus.APPROVED,
+                name = "test"
+            )
             db.getCollection<Cluster>("Clusters")
-                .insertOne(Cluster(clusterId, "2020-05"))
+                .insertOne(cluster)
             assertThat(clusterRepository.findClusterById(clusterId)!!.published)
                 .isFalse()
 
@@ -176,6 +182,50 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
             assertThat(result).isTrue()
             assertThat(clusterRepository.findClusterById(clusterId)!!.published)
                 .isTrue()
+        }
+    }
+
+    @Test
+    internal fun `should return true if cluster is not approved and published is not updated updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val cluster = Cluster(
+                id = clusterId,
+                week = "2020-05",
+                name = "test"
+            )
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(cluster)
+            assertThat(clusterRepository.findClusterById(clusterId)!!.published)
+                .isFalse()
+
+            val result = clusterRepository.makePublished(clusterId)
+
+            assertThat(result).isFalse()
+            assertThat(clusterRepository.findClusterById(clusterId)!!.published)
+                .isFalse()
+        }
+    }
+
+    @Test
+    internal fun `should return true if cluster is not named and published is not updated updated`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val cluster = Cluster(
+                id = clusterId,
+                week = "2020-05",
+                status = ClusterStatus.APPROVED
+            )
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(cluster)
+            assertThat(clusterRepository.findClusterById(clusterId)!!.published)
+                .isFalse()
+
+            val result = clusterRepository.makePublished(clusterId)
+
+            assertThat(result).isFalse()
+            assertThat(clusterRepository.findClusterById(clusterId)!!.published)
+                .isFalse()
         }
     }
 

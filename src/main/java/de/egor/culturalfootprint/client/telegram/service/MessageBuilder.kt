@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service
 class MessageBuilder {
 
     fun buildMessage(clusterResult: ClusterResult): String =
-        "*${clusterResult.cluster.name}*\n" +
+        "*${clusterResult.cluster.name}*\n\n" +
             clusterResult.records.joinToString(
                 "\n\n\n"
-            ) { it.data }
+            ) { it.data.replace("\n", "") }
 }
