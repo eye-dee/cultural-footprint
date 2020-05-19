@@ -3,8 +3,6 @@ package de.egor.culturalfootprint.client.telegram.service
 import com.elbekD.bot.Bot
 import de.egor.culturalfootprint.service.ClusterService
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import org.slf4j.LoggerFactory
@@ -29,18 +27,16 @@ class PublisherService(
                     clusterService.findApprovedDataFor(clusterId)
                         ?.let { cluster -> messageBuilder.buildMessage(cluster) }
                         ?.also { message ->
-                            userService.findAll().collect { user ->
-                                bot.sendMessage(
-                                    chatId = user.chatId,
-                                    text = message,
-                                    parseMode = "Markdown",
-                                    disableWebPagePreview = true
-                                ).whenComplete { _, ex ->
-                                    ex?.also {
-                                        log.warn("Exception acquired during acquired", it)
-                                    }
+                            bot.sendMessage(
+                                chatId = "cultural_footprint",
+                                text = message,
+                                parseMode = "Markdown",
+                                disableWebPagePreview = true
+                            ).whenComplete { _, ex ->
+                                ex?.also {
+                                    log.warn("Exception occurred during publishing cluster {}",
+                                        clusterId, it)
                                 }
-                                delay(100)
                             }
                         }
                 }
