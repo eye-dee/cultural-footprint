@@ -28,7 +28,7 @@ class PublisherService(
                         ?.let { cluster -> messageBuilder.buildMessage(cluster) }
                         ?.also { message ->
                             bot.sendMessage(
-                                chatId = "cultural_footprint",
+                                chatId = "@cultural_footprint",
                                 text = message,
                                 parseMode = "Markdown",
                                 disableWebPagePreview = true
