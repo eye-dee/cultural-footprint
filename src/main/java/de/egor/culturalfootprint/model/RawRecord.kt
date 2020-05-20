@@ -28,4 +28,4 @@ data class RecordSource(
     val sourceRepresentation: RecordSourceRepresentation? = null
 )
 
-data class RecordSourceRepresentation(val name: String, val url: String?)
+data class RecordSourceRepresentation(val name: String, val url: String?, val username: String)

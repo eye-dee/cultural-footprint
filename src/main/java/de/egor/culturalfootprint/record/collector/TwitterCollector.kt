@@ -39,7 +39,8 @@ class TwitterCollector(
                     source = RecordSource(
                         tweetId = tweet.id,
                         sourceRepresentation = RecordSourceRepresentation(
-                            name = tweet.user.screenName,
+                            name = tweet.user.name,
+                            username = tweet.user.screenName,
                             url = tweet.user.url
                         )
                     )
