@@ -2,6 +2,7 @@ package de.egor.culturalfootprint.record.collector
 
 import de.egor.culturalfootprint.model.RawRecord
 import de.egor.culturalfootprint.model.RecordSource
+import de.egor.culturalfootprint.model.RecordSourceRepresentation
 import de.egor.culturalfootprint.repository.RawRecordRepository
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
@@ -35,7 +36,14 @@ class TwitterCollector(
                         UTC_ZONE
                     ),
                     data = tweet.text,
-                    source = RecordSource(tweetId = tweet.id)
+                    source = RecordSource(
+                        tweetId = tweet.id,
+                        sourceRepresentation = RecordSourceRepresentation(
+                            name = tweet.user.name,
+                            username = tweet.user.screenName,
+                            url = tweet.user.url
+                        )
+                    )
                 )
             }
             .collect(toList())

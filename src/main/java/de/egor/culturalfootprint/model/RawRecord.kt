@@ -23,4 +23,9 @@ private fun currentWeek(date: LocalDateTime): String {
     return date.year.toString() + "-" + adjustedWeekString
 }
 
-data class RecordSource(val tweetId: Long)
+data class RecordSource(
+    val tweetId: Long,
+    val sourceRepresentation: RecordSourceRepresentation? = null
+)
+
+data class RecordSourceRepresentation(val name: String, val url: String?, val username: String)
