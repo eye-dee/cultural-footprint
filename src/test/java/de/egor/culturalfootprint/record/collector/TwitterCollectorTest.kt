@@ -14,10 +14,12 @@ import twitter4j.RateLimitStatus
 import twitter4j.ResponseList
 import twitter4j.Status
 import twitter4j.Twitter
+import twitter4j.User
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 @ExtendWith(MockitoExtension::class)
 internal class TwitterCollectorTest {
@@ -34,6 +36,9 @@ internal class TwitterCollectorTest {
     @Mock
     private lateinit var status: Status
 
+    @Mock
+    private lateinit var user: User
+
     @InjectMocks
     private lateinit var collector: TwitterCollector
 
@@ -45,6 +50,10 @@ internal class TwitterCollectorTest {
             given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
             given(status.id).willReturn(100500)
             given(status.text).willReturn("some text")
+            given(status.user).willReturn(user)
+            given(user.name).willReturn("name")
+            given(user.screenName).willReturn("username")
+            given(user.url).willReturn("url")
             val date = LocalDateTime.of(2019, 2, 13, 15, 0)
             given(status.createdAt).willReturn(Date.from(date.toInstant(ZoneOffset.UTC)))
 
@@ -55,6 +64,11 @@ internal class TwitterCollectorTest {
             assertThat(rawRecord.data).isEqualTo("some text")
             assertThat(rawRecord.source.tweetId).isEqualTo(100500)
             assertThat(rawRecord.date).isEqualTo(date)
+            val sourceRepresentation = rawRecord.source.sourceRepresentation
+            assertThat(sourceRepresentation).isNotNull()
+            assertThat(sourceRepresentation!!.username).isEqualTo("username")
+            assertThat(sourceRepresentation!!.name).isEqualTo("name")
+            assertThat(sourceRepresentation!!.url).isEqualTo("url")
         }
     }
 
@@ -66,6 +80,10 @@ internal class TwitterCollectorTest {
             given(twitter.getHomeTimeline(any())).willReturn(TwitterResponseList(listOf(status)))
             given(status.id).willReturn(100500)
             given(status.text).willReturn("some text")
+            given(status.user).willReturn(user)
+            given(user.name).willReturn("name")
+            given(user.screenName).willReturn("username")
+            given(user.url).willReturn("url")
             val date = LocalDateTime.of(2019, 2, 13, 15, 0)
             given(status.createdAt).willReturn(Date.from(date.toInstant(ZoneOffset.UTC)))
 
