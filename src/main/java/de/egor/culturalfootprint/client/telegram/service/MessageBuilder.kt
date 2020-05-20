@@ -10,5 +10,5 @@ class MessageBuilder {
         "*${clusterResult.cluster.name}*\n\n" +
             clusterResult.records.joinToString(
                 "\n\n\n"
-            ) { it.data.replace("\n", "") }
+            ) { it.data.replace("\n", " ") }
 }
