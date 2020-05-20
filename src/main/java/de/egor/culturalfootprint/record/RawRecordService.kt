@@ -43,7 +43,7 @@ open class RawRecordService(
                 } catch (e: Exception) {
                     log.warn("Exception collecting records", e)
                 }
-                delay(Duration.ofHours(1).toMillis())
+                delay(Duration.ofMinutes(15).toMillis())
             }
         }
         log.info("Polling started")
