@@ -13,13 +13,12 @@ class MessageBuilder {
             ) { rawRecord ->
                 var preparedMessage = rawRecord.data.replace("\n", " ")
                 preparedMessage = escapeMarkdown(preparedMessage)
-                rawRecord.source.sourceRepresentation?.let {
+                return rawRecord.source.sourceRepresentation?.let {
                    val escapedName = escapeMarkdown(it.name)
                    val userRepresentationLine =
                            "[$escapedName](https://twitter.com/${it.username})\n"
-                    return@joinToString userRepresentationLine + preparedMessage
-                }
-                return@joinToString preparedMessage
+                    return userRepresentationLine + preparedMessage
+                } ?: preparedMessage 
             }
 
     private fun escapeMarkdown(input: String): String {
