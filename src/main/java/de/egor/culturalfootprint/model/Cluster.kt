@@ -8,7 +8,9 @@ data class Cluster(
     val week: String,
     val status: ClusterStatus? = null,
     val name: String? = null,
-    val published: Boolean = false
+    val published: Boolean = false,
+    val likedBy: List<UUID> = emptyList(),
+    val dislikedBy: List<UUID> = emptyList()
 )
 
 enum class ClusterStatus {

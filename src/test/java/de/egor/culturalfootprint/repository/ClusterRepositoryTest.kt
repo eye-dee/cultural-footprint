@@ -1,6 +1,7 @@
 package de.egor.culturalfootprint.repository
 
 import de.egor.culturalfootprint.AbstractRepositoryTest
+import de.egor.culturalfootprint.client.telegram.model.UserEntity
 import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.model.ClusterStatus
 import de.egor.culturalfootprint.model.RawRecord
@@ -13,6 +14,7 @@ import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ClusterRepositoryTest : AbstractRepositoryTest() {
+
     private val clusterRepository = ClusterRepository(db, ClusterRepositoryProperties())
 
     @BeforeEach
@@ -243,6 +245,140 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
             assertThat(result).isFalse()
             assertThat(clusterRepository.findClusterById(clusterId)!!.published)
                 .isFalse()
+        }
+    }
+
+    @Test
+    fun `should add user to liked when empty list`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val week = "2020-05"
+            val insertedCluster = Cluster(clusterId, week)
+            val userEntity = UserEntity(userId, 1)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val expected = insertedCluster.copy(likedBy = listOf(userId))
+            assertThat(clusterRepository.likedBy(clusterId, userEntity))
+                .isNotNull
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should add user to liked when liked has element`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val week = "2020-05"
+            val insertedCluster = Cluster(
+                id = clusterId, week = week, likedBy = listOf(UUID.randomUUID())
+            )
+            val userEntity = UserEntity(userId, 1)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val expected = insertedCluster.copy(likedBy = insertedCluster.likedBy.plus(userId))
+            assertThat(clusterRepository.likedBy(clusterId, userEntity))
+                .isNotNull
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should remove user from disliked when likedBy()`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val week = "2020-05"
+            val insertedCluster = Cluster(
+                id = clusterId, week = week, dislikedBy = listOf(userId)
+            )
+            val userEntity = UserEntity(userId, 1)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val expected = insertedCluster.copy(
+                likedBy = listOf(userId),
+                dislikedBy = emptyList()
+            )
+            assertThat(clusterRepository.likedBy(clusterId, userEntity))
+                .isNotNull
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should add user to disliked when empty list`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val week = "2020-05"
+            val insertedCluster = Cluster(clusterId, week)
+            val userEntity = UserEntity(userId, 1)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val expected = insertedCluster.copy(dislikedBy = listOf(userId))
+            assertThat(clusterRepository.dislikedBy(clusterId, userEntity))
+                .isNotNull
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should add user to disliked when disliked has element`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val week = "2020-05"
+            val insertedCluster = Cluster(
+                id = clusterId, week = week, dislikedBy = listOf(UUID.randomUUID())
+            )
+            val userEntity = UserEntity(userId, 1)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val expected = insertedCluster.copy(dislikedBy = insertedCluster.dislikedBy.plus(userId))
+            assertThat(clusterRepository.dislikedBy(clusterId, userEntity))
+                .isNotNull
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `should remove user from liked when dislikedBy()`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val week = "2020-05"
+            val insertedCluster = Cluster(
+                id = clusterId, week = week, likedBy = listOf(userId)
+            )
+            val userEntity = UserEntity(userId, 1)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val expected = insertedCluster.copy(
+                likedBy = emptyList(),
+                dislikedBy = listOf(userId)
+            )
+            assertThat(clusterRepository.dislikedBy(clusterId, userEntity))
+                .isNotNull
+
+            assertThat(clusterRepository.findClusterById(clusterId))
+                .isEqualTo(expected)
         }
     }
 

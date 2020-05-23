@@ -6,7 +6,7 @@ import java.util.UUID
 data class UserEntity(
     @BsonId val id: UUID = UUID.randomUUID(),
     val chatId: Long,
-    val firstName: String?,
-    val lastName: String?,
-    val username: String?
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val username: String? = null
 )

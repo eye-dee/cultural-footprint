@@ -1,6 +1,7 @@
 package de.egor.culturalfootprint.service
 
 import de.egor.culturalfootprint.admin.dto.ClusterResult
+import de.egor.culturalfootprint.client.telegram.model.UserEntity
 import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.model.ClusterStatus
 import de.egor.culturalfootprint.repository.ClusterRepository
@@ -46,4 +47,10 @@ class ClusterService(
         clusterRepository.updateName(clusterId, name)
 
     suspend fun publish(clusterId: UUID): Boolean = clusterRepository.makePublished(clusterId)
+
+    suspend fun likedBy(clusterId: UUID, userEntity: UserEntity) =
+        clusterRepository.likedBy(clusterId, userEntity)
+
+    suspend fun dislikedBy(clusterId: UUID, userEntity: UserEntity) =
+        clusterRepository.likedBy(clusterId, userEntity)
 }
