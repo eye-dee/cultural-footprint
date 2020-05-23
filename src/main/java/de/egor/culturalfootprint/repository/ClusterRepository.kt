@@ -1,15 +1,20 @@
 package de.egor.culturalfootprint.repository
 
+import com.mongodb.client.model.Updates
+import de.egor.culturalfootprint.client.telegram.model.UserEntity
 import de.egor.culturalfootprint.model.Cluster
 import de.egor.culturalfootprint.model.ClusterStatus
 import org.litote.kmongo.SetTo
+import org.litote.kmongo.addToSet
 import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import org.litote.kmongo.ne
 import org.litote.kmongo.or
+import org.litote.kmongo.pull
 import org.litote.kmongo.set
+import org.litote.kmongo.setValue
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
@@ -58,6 +63,25 @@ open class ClusterRepository(
           Cluster::id eq clusterId,
           set(SetTo(Cluster::name, name))
       ).matchedCount > 0
+
+
+    suspend fun likedBy(clusterId: UUID, userEntity: UserEntity) =
+      col.findOneAndUpdate(
+            Cluster::id eq clusterId,
+            Updates.combine(
+                addToSet(Cluster::likedBy, userEntity.id),
+                pull(Cluster::dislikedBy, userEntity.id)
+            )
+        )
+
+    suspend fun dislikedBy(clusterId: UUID, userEntity: UserEntity) =
+        col.findOneAndUpdate(
+            Cluster::id eq clusterId,
+            Updates.combine(
+                addToSet(Cluster::dislikedBy, userEntity.id),
+                pull(Cluster::likedBy, userEntity.id)
+            )
+        )
 }
 
 @Component

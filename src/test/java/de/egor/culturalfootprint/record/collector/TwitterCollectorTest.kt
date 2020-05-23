@@ -67,8 +67,8 @@ internal class TwitterCollectorTest {
             val sourceRepresentation = rawRecord.source.sourceRepresentation
             assertThat(sourceRepresentation).isNotNull()
             assertThat(sourceRepresentation!!.username).isEqualTo("username")
-            assertThat(sourceRepresentation!!.name).isEqualTo("name")
-            assertThat(sourceRepresentation!!.url).isEqualTo("url")
+            assertThat(sourceRepresentation.name).isEqualTo("name")
+            assertThat(sourceRepresentation.url).isEqualTo("url")
         }
     }
 
