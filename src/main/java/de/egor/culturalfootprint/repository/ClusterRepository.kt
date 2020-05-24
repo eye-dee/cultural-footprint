@@ -14,7 +14,6 @@ import org.litote.kmongo.ne
 import org.litote.kmongo.or
 import org.litote.kmongo.pull
 import org.litote.kmongo.set
-import org.litote.kmongo.setValue
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
@@ -81,6 +80,15 @@ open class ClusterRepository(
                 addToSet(Cluster::dislikedBy, userEntity.id),
                 pull(Cluster::likedBy, userEntity.id)
             )
+        )
+
+    suspend fun updateTelegramPostId(clusterId: UUID, messageId: Int): Cluster? =
+        col.findOneAndUpdate(
+            and(
+                Cluster::id eq clusterId,
+                Cluster::telegramPostId eq null
+            ),
+            set(SetTo(Cluster::telegramPostId, messageId))
         )
 }
 
