@@ -54,7 +54,7 @@ class ClusterService(
         clusterRepository.likedBy(clusterId, userEntity)
 
     suspend fun dislikedBy(clusterId: UUID, userEntity: UserEntity) =
-        clusterRepository.likedBy(clusterId, userEntity)
+        clusterRepository.dislikedBy(clusterId, userEntity)
 
     suspend fun updateTelegramPostId(clusterId: UUID, messageId: Int)
         = clusterRepository.updateTelegramPostId(clusterId, messageId)
