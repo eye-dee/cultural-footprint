@@ -19,4 +19,7 @@ class UserService(
         user.let { telegramToModelConverter.convert(it) }
             .let { userRepository.updateOrInsert(it) }
 
+    suspend fun findByTelegramId(telegramUserId: Long)
+        = userRepository.findByTelegramId(telegramUserId)
+
 }

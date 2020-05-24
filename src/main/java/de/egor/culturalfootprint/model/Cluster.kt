@@ -10,7 +10,8 @@ data class Cluster(
     val name: String? = null,
     val published: Boolean = false,
     val likedBy: List<UUID> = emptyList(),
-    val dislikedBy: List<UUID> = emptyList()
+    val dislikedBy: List<UUID> = emptyList(),
+    val telegramPostId: Int? = null
 )
 
 enum class ClusterStatus {

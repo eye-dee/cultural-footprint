@@ -1,6 +1,7 @@
 telegram:
   botUsername: ${TELEGRAM_BOT_USERNAME}
   token: ${TELEGRAM_BOT_TOKEN}
+  channelName: "@cultural_footprint"
 twitter:
   consumerKey: ${TWITTER_API_KEY}
   consumerSecret: ${TWITTER_API_SECRET_KEY}

@@ -382,5 +382,39 @@ internal class ClusterRepositoryTest : AbstractRepositoryTest() {
         }
     }
 
+    @Test
+    fun `should update telegram post id when it's not set yet`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val insertedCluster = Cluster(id = clusterId, week = "2020-05")
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val cluster = clusterRepository.updateTelegramPostId(clusterId, 100)
+
+            assertThat(cluster).isNotNull
+            assertThat(clusterRepository.findClusterById(clusterId)?.telegramPostId)
+                .isEqualTo(100)
+        }
+    }
+
+    @Test
+    fun `should not update telegram post id when it's already set`() {
+        runBlocking {
+            val clusterId = UUID.randomUUID()
+            val userId = UUID.randomUUID()
+            val insertedCluster = Cluster(id = clusterId, week = "2020-05", telegramPostId = 124)
+            db.getCollection<Cluster>("Clusters")
+                .insertOne(insertedCluster)
+
+            val cluster = clusterRepository.updateTelegramPostId(clusterId, 100)
+
+            assertThat(cluster).isNull()
+            assertThat(clusterRepository.findClusterById(clusterId)?.telegramPostId)
+                .isEqualTo(124)
+        }
+    }
+
 }
 

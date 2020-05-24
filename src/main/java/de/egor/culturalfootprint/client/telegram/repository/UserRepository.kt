@@ -38,6 +38,9 @@ class UserRepository(
                 .upsert(true)
                 .returnDocument(ReturnDocument.AFTER)
         )
+
+    suspend fun findByTelegramId(telegramUserId: Long): UserEntity?
+        = collection.findOne(UserEntity::chatId eq telegramUserId)
 }
 
 @Component

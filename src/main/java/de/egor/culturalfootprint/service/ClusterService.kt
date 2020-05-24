@@ -28,6 +28,8 @@ class ClusterService(
                 )
             }
 
+    suspend fun findById(clusterId: UUID): Cluster? = clusterRepository.findClusterById(clusterId)
+
     suspend fun findClusterById(clusterId: UUID): ClusterResult? =
         clusterRepository.findClusterById(clusterId)
             ?.let {
@@ -52,5 +54,8 @@ class ClusterService(
         clusterRepository.likedBy(clusterId, userEntity)
 
     suspend fun dislikedBy(clusterId: UUID, userEntity: UserEntity) =
-        clusterRepository.likedBy(clusterId, userEntity)
+        clusterRepository.dislikedBy(clusterId, userEntity)
+
+    suspend fun updateTelegramPostId(clusterId: UUID, messageId: Int)
+        = clusterRepository.updateTelegramPostId(clusterId, messageId)
 }
