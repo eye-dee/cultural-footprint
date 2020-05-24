@@ -48,14 +48,14 @@ class CallbackDataFactory(
             ?: throw CallbackDataParsingException("No creator for callback type '$callbackType'")
     }
 
-    fun likeCallbackData(clusterId: UUID): LikeCallbackData
-        = LikeCallbackData(clusterId, userService, clusterService, telegramProperties, likeMarkupFactory)
-
-    fun dislikeCallbackData(clusterId: UUID): DislikeCallbackData
-        = DislikeCallbackData(clusterId, userService, clusterService, telegramProperties, likeMarkupFactory)
-
     companion object {
         const val delimiter = ":"
+
+        fun likeCallbackData(clusterId: UUID): String
+            = CallbackType.LIKE.prefix + delimiter + clusterId
+
+        fun dislikeCallbackData(clusterId: UUID): String
+            = CallbackType.DISLIKE.prefix + delimiter + clusterId
     }
 
 }

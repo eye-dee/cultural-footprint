@@ -8,6 +8,7 @@ import de.egor.culturalfootprint.client.telegram.service.UserService
 import de.egor.culturalfootprint.service.ClusterService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
 class LikeCallbackData(
@@ -53,6 +54,8 @@ abstract class AbstractLikingCallbackData(
     private val likeMarkupFactory: LikeMarkupFactory
 ) : CallbackData {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     internal fun updateLikingMarkup(clusterId: UUID): (Bot) -> Unit {
         return { bot ->
             GlobalScope.launch {
@@ -61,7 +64,9 @@ abstract class AbstractLikingCallbackData(
                         chatId = telegramProperties.channelName,
                         messageId = it.telegramPostId,
                         markup = likeMarkupFactory.likingKeyboard(clusterId)
-                    )
+                    ).whenComplete { _, e -> e?.also {
+                        log.warn("Exception updating post for cluster {}", clusterId, e)
+                    }}
                 }
             }
         }
