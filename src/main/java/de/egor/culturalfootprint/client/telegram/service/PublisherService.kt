@@ -1,6 +1,7 @@
 package de.egor.culturalfootprint.client.telegram.service
 
 import com.elbekD.bot.Bot
+import com.elbekD.bot.types.Message
 import de.egor.culturalfootprint.client.telegram.markup.LikeMarkupFactory
 import de.egor.culturalfootprint.client.telegram.properties.TelegramProperties
 import de.egor.culturalfootprint.service.ClusterService
@@ -10,6 +11,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
+import java.util.concurrent.CompletableFuture
 
 @Service
 class PublisherService(
@@ -29,18 +31,14 @@ class PublisherService(
                 ?.let {
                     clusterService.findApprovedDataFor(clusterId)
                         ?.let { cluster -> messageBuilder.buildMessage(cluster) }
-                        ?.also { message ->
-                            bot.sendMessage(
-                                chatId = telegramProperties.channelName,
-                                text = message,
-                                parseMode = "Markdown",
-                                disableWebPagePreview = true,
-                                markup = likeMarkupFactory.likingKeyboard(clusterId)
-                            ).whenComplete { post, ex ->
-                                ex?.also {
-                                    log.warn("Exception occurred during publishing cluster {}",
-                                        clusterId, it)
+                        ?.also { messages ->
+                            messages.subList(0, messages.lastIndex).map { message ->
+                                sendMessage(message, clusterId, false).whenComplete { _, ex ->
+                                    logPublishingError(ex, clusterId)
                                 }
+                            }
+                            sendMessage(messages.last(), clusterId, true).whenComplete { post, ex ->
+                                logPublishingError(ex, clusterId)
                                 post?.also {
                                     GlobalScope.launch {
                                         clusterService.updateTelegramPostId(clusterId, post.message_id)
@@ -48,7 +46,27 @@ class PublisherService(
                                 }
                             }
                         }
+
                 }
         }
     }
+
+    private fun logPublishingError(ex: Throwable?, clusterId: UUID) {
+        ex?.also {
+            log.warn("Exception occurred during publishing cluster {}",
+                clusterId, it)
+        }
+    }
+
+    private suspend fun sendMessage(message: String, clusterId: UUID, likesMarkup: Boolean):
+        CompletableFuture<Message> {
+        return bot.sendMessage(
+            chatId = telegramProperties.channelName,
+            text = message,
+            parseMode = "Markdown",
+            disableWebPagePreview = true,
+            markup = likeMarkupFactory.takeIf { likesMarkup }?.likingKeyboard(clusterId)
+        )
+    }
 }
+
