@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 class MessageBuilder {
 
     fun buildMessage(clusterResult: ClusterResult): List<String> =
-        clusterResult.records.windowed(recordsPerMessage, 1, true)
+        clusterResult.records.windowed(recordsPerMessage, recordsPerMessage, true)
             .withIndex()
             .map {
                 formatTitle(clusterResult, it) +
