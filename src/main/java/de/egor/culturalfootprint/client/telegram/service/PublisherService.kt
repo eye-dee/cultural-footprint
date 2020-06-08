@@ -25,7 +25,7 @@ class PublisherService(
     private val log = LoggerFactory.getLogger(PublisherService::class.java)
     private val context = newFixedThreadPoolContext(2, "cluster-publisher")
 
-    suspend fun publishClusterForAllUsers(clusterId: UUID) {
+    suspend fun publishClusterForAllUsers(clusterId: UUID, preview: Boolean) {
         GlobalScope.launch(context) {
             clusterService.publish(clusterId).takeIf { it }
                 ?.let {
@@ -33,13 +33,13 @@ class PublisherService(
                         ?.let { cluster -> messageBuilder.buildMessage(cluster) }
                         ?.also { messages ->
                             messages.subList(0, messages.lastIndex).map { message ->
-                                sendMessage(message, clusterId, false).whenComplete { _, ex ->
+                                sendMessage(message, clusterId, false, preview).whenComplete { _, ex ->
                                     logPublishingError(ex, clusterId)
                                 }
                             }
-                            sendMessage(messages.last(), clusterId, true).whenComplete { post, ex ->
+                            sendMessage(messages.last(), clusterId, !preview, preview).whenComplete { post, ex ->
                                 logPublishingError(ex, clusterId)
-                                post?.also {
+                                post?.takeIf { !preview }?.also {
                                     GlobalScope.launch {
                                         clusterService.updateTelegramPostId(clusterId, post.message_id)
                                     }
@@ -58,10 +58,10 @@ class PublisherService(
         }
     }
 
-    private suspend fun sendMessage(message: String, clusterId: UUID, likesMarkup: Boolean):
+    private suspend fun sendMessage(message: String, clusterId: UUID, likesMarkup: Boolean, preview: Boolean):
         CompletableFuture<Message> {
         return bot.sendMessage(
-            chatId = telegramProperties.channelName,
+            chatId = telegramProperties.previewChannelName.takeIf { preview } ?: telegramProperties.channelName,
             text = message,
             parseMode = "Markdown",
             disableWebPagePreview = true,
