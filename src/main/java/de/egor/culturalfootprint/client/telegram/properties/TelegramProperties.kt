@@ -10,4 +10,5 @@ class TelegramProperties {
     lateinit var botUsername: String
     lateinit var token: String
     lateinit var channelName: String
+    lateinit var previewChannelName: String
 }
