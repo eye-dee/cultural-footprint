@@ -3,10 +3,9 @@ package de.egor.culturalfootprint.client.telegram.converter
 import com.elbekD.bot.types.Message
 import de.egor.culturalfootprint.client.telegram.model.UserEntity
 import org.springframework.stereotype.Component
-import java.util.UUID
 
 @Component
-class TelegramToModelConverter : Converter<Message, UserEntity> {
+class TelegramBotToModelConverter : Converter<Message, UserEntity> {
     override fun convert(source: Message): UserEntity =
         UserEntity(
             chatId = source.chat.id,
@@ -14,5 +13,4 @@ class TelegramToModelConverter : Converter<Message, UserEntity> {
             lastName = source.from?.last_name,
             username = source.from?.username
         )
-
 }
