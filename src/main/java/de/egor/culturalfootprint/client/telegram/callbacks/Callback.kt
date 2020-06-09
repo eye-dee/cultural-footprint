@@ -2,6 +2,7 @@ package de.egor.culturalfootprint.client.telegram.callbacks
 
 import com.elbekD.bot.Bot
 import de.egor.culturalfootprint.client.telegram.markup.LikeMarkupFactory
+import de.egor.culturalfootprint.client.telegram.model.User
 import de.egor.culturalfootprint.client.telegram.properties.TelegramProperties
 import de.egor.culturalfootprint.client.telegram.service.UserService
 import de.egor.culturalfootprint.service.ClusterService
@@ -62,9 +63,7 @@ class CallbackDataFactory(
 
 interface CallbackData {
 
-    fun toCallbackString(): String
-
-    suspend fun execute(telegramUserId: Int): (Bot) -> Unit
+    suspend fun execute(user: User): (Bot) -> Unit
 
 }
 

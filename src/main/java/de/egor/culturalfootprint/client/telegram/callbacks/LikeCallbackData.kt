@@ -2,6 +2,7 @@ package de.egor.culturalfootprint.client.telegram.callbacks
 
 import com.elbekD.bot.Bot
 import de.egor.culturalfootprint.client.telegram.markup.LikeMarkupFactory
+import de.egor.culturalfootprint.client.telegram.model.User
 import de.egor.culturalfootprint.client.telegram.model.UserEntity
 import de.egor.culturalfootprint.client.telegram.properties.TelegramProperties
 import de.egor.culturalfootprint.client.telegram.service.UserService
@@ -19,12 +20,9 @@ class LikeCallbackData(
     likeMarkupFactory: LikeMarkupFactory
 ) : AbstractLikingCallbackData(clusterService, telegramProperties, likeMarkupFactory, userService) {
 
-    override fun toCallbackString(): String =
-        CallbackType.LIKE.prefix + CallbackDataFactory.delimiter + clusterId
-
-    override suspend fun execute(telegramUserId: Int): (Bot) -> Unit {
-        val user = findUser(telegramUserId)
-        clusterService.likedBy(clusterId, user)
+    override suspend fun execute(user: User): (Bot) -> Unit {
+        val userEntity = findUser(user)
+        clusterService.likedBy(clusterId, userEntity)
         return updateLikingMarkup(clusterId)
     }
 
@@ -38,12 +36,9 @@ class DislikeCallbackData(
     likeMarkupFactory: LikeMarkupFactory
 ) : AbstractLikingCallbackData(clusterService, telegramProperties, likeMarkupFactory, userService) {
 
-    override fun toCallbackString(): String =
-        CallbackType.DISLIKE.prefix + CallbackDataFactory.delimiter + clusterId
-
-    override suspend fun execute(telegramUserId: Int): (Bot) -> Unit {
-        val user = findUser(telegramUserId)
-        clusterService.dislikedBy(clusterId, user)
+    override suspend fun execute(user: User): (Bot) -> Unit {
+        val userEntity = findUser(user)
+        clusterService.dislikedBy(clusterId, userEntity)
         return updateLikingMarkup(clusterId)
     }
 }
@@ -71,9 +66,8 @@ abstract class AbstractLikingCallbackData(
         }
     }
 
-    internal suspend fun findUser(telegramUserId: Int): UserEntity {
-        return userService.findByTelegramId(telegramUserId.toLong())
-            ?: throw RuntimeException("User not found")
+    internal suspend fun findUser(user: User): UserEntity {
+        return userService.findByTelegramId(user.chatId) ?: userService.create(user)
     }
 
     companion object {

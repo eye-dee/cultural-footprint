@@ -1,8 +1,11 @@
 package de.egor.culturalfootprint.client.telegram.config
 
 import com.elbekD.bot.Bot
+import com.elbekD.bot.types.CallbackQuery
 import de.egor.culturalfootprint.client.telegram.callbacks.CallbackDataFactory
 import de.egor.culturalfootprint.client.telegram.commands.TelegramCommand
+import de.egor.culturalfootprint.client.telegram.converter.Converter
+import de.egor.culturalfootprint.client.telegram.model.User
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
@@ -12,7 +15,8 @@ import org.springframework.stereotype.Component
 class StartupApplicationListenerBotInit(
     private val telegramBot: Bot,
     commands: List<TelegramCommand>,
-    private val callbackDataFactory: CallbackDataFactory
+    private val callbackDataFactory: CallbackDataFactory,
+    private val converter: Converter<CallbackQuery, User>
 ) : ApplicationListener<ContextRefreshedEvent> {
 
     private val commandsMap = commands.map { it.command() to it::action }
@@ -31,7 +35,7 @@ class StartupApplicationListenerBotInit(
                     try {
                         callbackQuery.data?.let { data ->
                             val action = callbackDataFactory.parse(data)
-                                .execute(callbackQuery.from.id)
+                                .execute(converter.convert(callbackQuery))
                             action(bot)
                         }
                     } catch (e: RuntimeException) {

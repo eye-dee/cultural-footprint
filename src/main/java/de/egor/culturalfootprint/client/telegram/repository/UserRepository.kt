@@ -32,7 +32,8 @@ class UserRepository(
                 setValue(UserEntity::firstName, userEntity.firstName),
                 setValue(UserEntity::lastName, userEntity.lastName),
                 setValue(UserEntity::username, userEntity.username),
-                setOnInsert(UserEntity::id, userEntity.id)
+                setOnInsert(UserEntity::id, userEntity.id),
+                setOnInsert(UserEntity::chatId, userEntity.chatId)
             ),
             FindOneAndUpdateOptions()
                 .upsert(true)
