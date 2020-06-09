@@ -27,7 +27,7 @@ class PublisherService(
 
     suspend fun publishClusterForAllUsers(clusterId: UUID, preview: Boolean) {
         GlobalScope.launch(context) {
-            clusterService.publish(clusterId).takeIf { it }
+            (clusterId.takeIf { preview }?.let { true } ?: clusterService.publish(clusterId).takeIf { it })
                 ?.let {
                     clusterService.findApprovedDataFor(clusterId)
                         ?.let { cluster -> messageBuilder.buildMessage(cluster) }
