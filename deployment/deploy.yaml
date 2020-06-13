@@ -11,10 +11,10 @@
             path: ~/deploy-{{ timestamp }}
             state: directory
 
-        - name: Copy compose file
-          copy:
-            src: ../docker-compose.yml
-            dest: ~/deploy-{{ timestamp }}/docker-compose.yml
+        - name: Clone deployment repo
+          git:
+            repo: 'https://github.com/romangr/cultural-footprint-deploy.git'
+            dest: ~/deploy-{{ timestamp }}
 
         - name: Start up database
           docker_compose:
